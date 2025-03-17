@@ -1,0 +1,23 @@
+{
+  "name": "@project/utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
