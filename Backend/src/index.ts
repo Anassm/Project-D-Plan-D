@@ -1,13 +1,20 @@
-import { fastify } from "fastify";
+import Fastify, { fastify } from "fastify";
+import {showRoutes} from "./routes/touchpointsRoutes";
+export const server = Fastify();
 
-const server = fastify({ logger: true });
-const port: number = 8080;
-
-server.listen({ port }, (err) => {
-  if (err) {
-    server.log.error(err);
-    process.exit(1);
-  }
-
-  server.log.info(`Server running on port ${port}`);
-});
+const start = async () => {
+    try
+    {
+      showRoutes(server);
+        await server.listen({ port: 3000 });
+        console.log('Server listening on port 3000');
+    } catch (err)
+    {
+        console.log(err);
+        process.exit(1);
+    }
+};
+server.get("/", async (request, reply) => {
+  console.log("Request received");
+    });
+start();
