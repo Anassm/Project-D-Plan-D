@@ -1,20 +1,18 @@
-import Fastify, { fastify } from "fastify";
-import {showRoutes} from "./routes/touchpointsRoutes";
-export const server = Fastify();
+import Fastify from "fastify";
+import { showRoutes } from "./routes/touchpointsRoutes";
+import dotenv from "dotenv";
 
-const start = async () => {
-    try
-    {
-      showRoutes(server);
-        await server.listen({ port: 3000 });
-        console.log('Server listening on port 3000');
-    } catch (err)
-    {
-        console.log(err);
-        process.exit(1);
-    }
-};
-server.get("/", async (request, reply) => {
-  console.log("Request received");
-    });
-start();
+dotenv.config();
+
+export const server = Fastify();
+const port: Number = 3000;
+
+showRoutes(server);
+server.listen({ port: Number(process.env.API_PORT) }, function (err, address) {
+  if (err) {
+    server.log.error(err);
+    process.exit(1);
+  }
+
+  console.log(`Server listening on port ${port}`);
+});

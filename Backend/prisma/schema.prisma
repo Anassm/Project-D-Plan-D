@@ -14,43 +14,20 @@ datasource db {
 }
 
 model touchpoint {
-    flightid         Int      @id
-    timetableid      Int
-    flightnumber     Int
-    traffictype      String   @db.VarChar() // 1 char
-    scheduledlocal   DateTime
-    airlineshortname String   @db.VarChar()
-    aircrafttype     String   @db.VarChar()
-    country          String   @db.VarChar()
-    paxforecast      Int
-    touchpoint       String   @db.VarChar()
-    touchpointtime   DateTime
-    touchpointpax    Float
-    actuallocal      DateTime
-    paxactual        String?  @db.VarChar()
+    id               Int       @id @default(autoincrement())
+    flightid         Int?
+    timetableid      Int?
+    flightnumber     String?
+    traffictype      String?   @db.VarChar() // 1 char
+    scheduledlocal   DateTime?
+    airlineshortname String?   @db.VarChar()
+    airport          String?
+    aircrafttype     String?   @db.VarChar()
+    country          String?   @db.VarChar()
+    paxforecast      Int?
+    touchpoint       String?   @db.VarChar()
+    touchpointtime   DateTime?
+    touchpointpax    Float?
+    actuallocal      DateTime?
+    paxactual        String?   @db.VarChar()
 }
-
-// model Post {
-//     id        Int      @id @default(autoincrement())
-//     title     String   @db.VarChar(255)
-//     createdAt DateTime @default(now()) @db.Timestamp(6)
-//     content   String?
-//     published Boolean  @default(false)
-//     authorId  Int
-//     User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-// }
-
-// model Profile {
-//     id     Int     @id @default(autoincrement())
-//     bio    String?
-//     userId Int     @unique
-//     User   User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-// }
-
-// model User {
-//     id      Int      @id @default(autoincrement())
-//     name    String?  @db.VarChar(255)
-//     email   String   @unique @db.VarChar(255)
-//     Post    Post[]
-//     Profile Profile?
-// }

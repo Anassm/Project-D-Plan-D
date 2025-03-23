@@ -3,28 +3,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.server = void 0;
 const fastify_1 = __importDefault(require("fastify"));
-const queries_1 = require("./queries");
-const server = (0, fastify_1.default)();
-server.get("/api/:table", async (request, reply) => {
-    try {
-        const { table } = request.params;
-        const data = await (0, queries_1.getAllDataFromTable)(table);
-        reply.send(data);
-    }
-    catch (err) {
-        console.error('Error:', err);
-        reply.status(500).send({ error: 'Internal server error' });
-    }
-});
-const start = async () => {
-    try {
-        await server.listen({ port: 3000 });
-        console.log('Server listening on port 3000');
-    }
-    catch (err) {
-        console.log(err);
+const touchpointsRoutes_1 = require("./routes/touchpointsRoutes");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+exports.server = (0, fastify_1.default)();
+const port = 3000;
+(0, touchpointsRoutes_1.showRoutes)(exports.server);
+exports.server.listen({ port: Number(process.env.API_PORT) }, function (err, address) {
+    if (err) {
+        exports.server.log.error(err);
         process.exit(1);
     }
-};
-start();
+    console.log(`Server listening on port ${port}`);
+});
