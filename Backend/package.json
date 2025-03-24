@@ -16,7 +16,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@eslint/js": "^9.22.0",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.13.11",
     "@types/pg": "^8.11.11",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
@@ -24,13 +24,17 @@
     "globals": "^16.0.0",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
+    "prisma": "^6.5.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
-    "pg": "^8.14.0"
+    "pg": "^8.14.1",
+    "Prisma": "npm:prisma@^6.5.0"
   }
 }

@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model touchpoint {
+    id               Int       @id @default(autoincrement())
+    flightid         Int?
+    timetableid      Int?
+    flightnumber     String?
+    traffictype      String?   @db.VarChar() // 1 char
+    scheduledlocal   DateTime?
+    airlineshortname String?   @db.VarChar()
+    airport          String?
+    aircrafttype     String?   @db.VarChar()
+    country          String?   @db.VarChar()
+    paxforecast      Int?
+    touchpoint       String?   @db.VarChar()
+    touchpointtime   DateTime?
+    touchpointpax    Float?
+    actuallocal      DateTime?
+    paxactual        String?   @db.VarChar()
+}
