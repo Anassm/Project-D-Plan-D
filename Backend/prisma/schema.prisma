@@ -14,111 +14,111 @@ datasource db {
 }
 
 model touchpoint {
-    id               Int       @id @default(autoincrement())
-    flightid         Int?
+    flightid         Int
     timetableid      Int?
     flightnumber     String?
-    traffictype      String?   @db.VarChar() // 1 char
-    scheduledlocal   DateTime?
+    traffictype      String   @db.VarChar(1) // 1 char
+    scheduledlocal   DateTime
     airlineshortname String?   @db.VarChar()
-    airport          String?
-    aircrafttype     String?   @db.VarChar()
-    country          String?   @db.VarChar()
-    paxforecast      Int?
-    touchpoint       String?   @db.VarChar()
-    touchpointtime   DateTime?
-    touchpointpax    Float?
-    actuallocal      DateTime?
+    airport          String
+    aircrafttype     String   @db.VarChar()
+    country          String   @db.VarChar()
+    paxforecast      Int
+    touchpoint       String   @db.VarChar()
+    touchpointtime   DateTime
+    touchpointpax    Float
+    actuallocal      DateTime
     paxactual        String?   @db.VarChar()
+
+    @@id([flightid, traffictype, scheduledlocal, airport, aircrafttype, country, paxforecast, touchpoint, touchpointtime, touchpointpax, actuallocal])
 }
 
 model flight {
-    id                    Int       @id @default(autoincrement())
     type                  String?   @db.VarChar()
-    flightid             Int?      // changed to lowercase
-    timetableid          Int?      
-    traffictype          String?   @db.VarChar(1)  // 1 char
-    flightnumber         String?
-    diverted             Boolean?
-    nachtvlucht          Boolean?
-    flightcode           Int? 
+    flightid              Int       @id
+    timetableid           Int?
+    traffictype           String?   @db.VarChar(1) // 1 char
+    flightnumber          String?
+    diverted              Boolean?
+    nachtvlucht           Boolean?
+    flightcode            Int?
     flightcodedescription String?
-    flightcodeiata       String?
-    publicannouncement   Boolean?
-    scheduledutc         DateTime?
-    actualutc            DateTime?
-    scheduledlocal       DateTime?
-    actuallocal          DateTime?
-    bewegingen           Int?
-    parkeerpositie      String?
-    parkeercontract     String?
+    flightcodeiata        String?
+    publicannouncement    Boolean?
+    scheduledutc          DateTime?
+    actualutc             DateTime?
+    scheduledlocal        DateTime?
+    actuallocal           DateTime?
+    bewegingen            Int?
+    parkeerpositie        String?
+    parkeercontract       String?
     bus                   Boolean?
     gate                  Int?
-    bagageband           Int?
-    airporticao          String?
-    airport              String?
-    country              String?
-    viaairporticao       String?
-    viaairport           String?
-    aircraftregistration String?
-    seats                Int?
-    mtow                 Int?
-    aircrafttype         String?   @db.VarChar()
-    aircraftdescription  String?
-    eu                   Boolean?
-    schengen             Boolean?
-    airlinefullname      String?
-    airlineshortname     String?   @db.VarChar()
-    airlineicao          String?
-    airlineiata          String?
-    debiteur             String?
-    debiteurnr           Int?
-    paxmale              Int?
-    paxfemale            Int?
-    paxchild             Int?
-    paxinfant            Int?
-    paxtransitmale       Int?
-    paxtransitfemale     Int?
-    paxtransitchild      Int?
-    paxtransitinfant     Int?
-    crewcabin            Int?
-    crewcockpit          Int?
-    bagsweight           Int?
-    bagstransitweight    Float?
-    bags                 Int?
-    bagstransit          Int?
-    afhandelaar          String?
-    forecastpercent      Float?
-    forecastpax          Int?
-    forecastbabys        Float?
-    flightclass          String?
-    datasource           String?
-    totaalpax            Int?
-    terminalpax          Int?
-    totaalpaxbetalend    Int?
-    terminalpaxbetalend  Int?
-    transitpax           Int?
-    transitpaxbetalend   Int?
-    totaalcrew           Int?
-    niks                 String?
-    terminalcrew         Int?
-    totaalseats          Int?
-    terminalseats        Int?
-    totaalbags           Int?
-    terminalbags         Int?
-    transitbags          Int?
-    totaalbagsweight     Float?
-    terminalbagsweight   Float?
-    transitbagsweight    Float?
-    runway               String?
-    longitude            Float?
-    elevation            Float?
-    latitude             Float?
-    distancekilometers   Float?
-    direction            String?
-    airportiata          String?
-    forecast             Boolean?
-    parked               Boolean?
-    seizoen              String?
-    feestdag             Boolean?
+    bagageband            Int?
+    airporticao           String?
+    airport               String?
+    country               String?
+    viaairporticao        String?
+    viaairport            String?
+    aircraftregistration  String?
+    seats                 Int?
+    mtow                  Int?
+    aircrafttype          String?   @db.VarChar()
+    aircraftdescription   String?
+    eu                    Boolean?
+    schengen              Boolean?
+    airlinefullname       String?
+    airlineshortname      String?   @db.VarChar()
+    airlineicao           String?
+    airlineiata           String?
+    debiteur              String?
+    debiteurnr            Int?
+    paxmale               Int?
+    paxfemale             Int?
+    paxchild              Int?
+    paxinfant             Int?
+    paxtransitmale        Int?
+    paxtransitfemale      Int?
+    paxtransitchild       Int?
+    paxtransitinfant      Int?
+    crewcabin             Int?
+    crewcockpit           Int?
+    bagsweight            Int?
+    bagstransitweight     Float?
+    bags                  Int?
+    bagstransit           Int?
+    afhandelaar           String?
+    forecastpercent       Float?
+    forecastpax           Int?
+    forecastbabys         Float?
+    flightclass           String?
+    datasource            String?
+    totaalpax             Int?
+    terminalpax           Int?
+    totaalpaxbetalend     Int?
+    terminalpaxbetalend   Int?
+    transitpax            Int?
+    transitpaxbetalend    Int?
+    totaalcrew            Int?
+    niks                  String?
+    terminalcrew          Int?
+    totaalseats           Int?
+    terminalseats         Int?
+    totaalbags            Int?
+    terminalbags          Int?
+    transitbags           Int?
+    totaalbagsweight      Float?
+    terminalbagsweight    Float?
+    transitbagsweight     Float?
+    runway                String?
+    longitude             Float?
+    elevation             Float?
+    latitude              Float?
+    distancekilometers    Float?
+    direction             String?
+    airportiata           String?
+    forecast              Boolean?
+    parked                Boolean?
+    seizoen               String?
+    feestdag              Boolean?
 }

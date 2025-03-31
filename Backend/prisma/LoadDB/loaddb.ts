@@ -3,34 +3,15 @@ import dotenv from "dotenv";
 import { getDMMF } from "@prisma/internals";
 import * as fs from "fs";
 import * as path from "path";
-import * as readline from 'readline';
 dotenv.config();
 
 const pool = new Pool({
-    user: "postgres",
-    host: "localhost",
-    database: process.env.DATABASE_NAME,
-    password: process.env.DATABASE_PASSWORD,
-    port: Number(process.env.DATABASE_PORT),
-  });
-
-  async function getFirstLine(filePath: string): Promise<string> {
-    const fileStream = fs.createReadStream(filePath); // Efficient file reading
-    const rl = readline.createInterface({ input: fileStream });
-    
-    for await (const line of rl) {
-      // Clean the line by removing any special characters and replacing spaces
-      const cleanedLine = line
-        .trim() // Remove leading and trailing whitespace
-        .replace(/[^\w,]/g, '') // Remove any special characters (except commas)
-        .replace(/\s+/g, '_'); // Replace spaces with underscores
-      
-      return cleanedLine; // Reads the first line and stops
-    }
-    
-    return ''; // In case the file is empty
-  }
-  
+  user: "postgres",
+  host: "localhost",
+  database: process.env.DATABASE_NAME,
+  password: process.env.DATABASE_PASSWORD,
+  port: Number(process.env.DATABASE_PORT),
+});
 
 const getModelNames = async (): Promise<string[]> => {
   // Read the schema.prisma file
@@ -59,13 +40,15 @@ async function main() {
         console.log(`no such file: ${filepath}`);
         continue;
       } else {
-        const firstLine = await getFirstLine(filepath); // Read the first line
+        const fillQuery: string = `COPY ${element} FROM '${filepath}' WITH CSV HEADER`;
+        console.log(fillQuery);
 
-        // const firstLine: string = await getFirstLine(filepath);
-        console.log(firstLine)
-        const Query : string = `COPY ${element} (${firstLine}) FROM '${filepath}' WITH CSV HEADER`;
-        console.log(Query);
-        await client.query(Query);
+        // drop table data
+        const dropQuery: string = `TRUNCATE TABLE ${element};`;
+        await client.query(dropQuery);
+
+        // fill table data
+        await client.query(fillQuery);
       }
     } catch (err) {
       console.log(err);
