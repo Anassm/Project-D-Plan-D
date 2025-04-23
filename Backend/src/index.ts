@@ -1,5 +1,6 @@
 import Fastify from "fastify";
-import { showRoutes } from "./routes/touchpointsRoutes";
+import { touchpointRoutes } from "./routes/touchpointsRoutes";
+import { flightsRoutes } from "./routes/flightsRoutes";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -7,7 +8,8 @@ dotenv.config();
 export const server = Fastify();
 const port: Number = 3000;
 
-showRoutes(server);
+server.register(touchpointRoutes);
+server.register(flightsRoutes);
 server.listen({ port: Number(process.env.API_PORT) }, function (err, address) {
   if (err) {
     server.log.error(err);
