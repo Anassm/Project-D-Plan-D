@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
-import { getAllDataFromTable } from "../controllers/touchpointsController";
 import { 
   GetAllFlightsInWindow,
   GetFlightsByAircraftType,
