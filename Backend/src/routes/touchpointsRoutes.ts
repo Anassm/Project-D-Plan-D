@@ -6,8 +6,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
+  user: process.env.DATABASE_USER,
+  host: process.env.DATABASE_URL,
   database: process.env.DATABASE_NAME,
   password: process.env.DATABASE_PASSWORD,
   port: Number(process.env.DATABASE_PORT),
@@ -18,7 +18,7 @@ function isNumeric(str: string): boolean {
 }
 
 export const showRoutes = (server: FastifyInstance) => {
-  server.get("/api/show/:table/:number", async (request, reply) => {
+  server.get("/api/show/:table/:number", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       const { table, number } = request.params as {
         table: string;
@@ -32,7 +32,7 @@ export const showRoutes = (server: FastifyInstance) => {
     }
   });
 
-  server.get("/api/show/:table", async (request, reply) => {
+  server.get("/api/show/:table", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       const { table, number } = request.params as {
         table: string;
@@ -46,7 +46,7 @@ export const showRoutes = (server: FastifyInstance) => {
     }
   });
 
-  server.get("/get/:table/:filters", async (request, reply) => {
+  server.get("/get/:table/:filters", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       //database connection setup
       const Client = await pool.connect();

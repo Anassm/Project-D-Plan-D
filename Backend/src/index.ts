@@ -1,10 +1,12 @@
 import Fastify from "fastify";
 import { showRoutes } from "./routes/touchpointsRoutes";
 import dotenv from "dotenv";
+import authentication from "./plugins/authentication";
 
 dotenv.config();
 
 export const server = Fastify();
+server.register(authentication);
 const port: Number = 3000;
 
 showRoutes(server);
