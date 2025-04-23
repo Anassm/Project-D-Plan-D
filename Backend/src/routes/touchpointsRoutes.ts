@@ -1,4 +1,6 @@
-import { FastifyInstance } from "fastify";
+import bcrypt from 'bcrypt';
+import { FastifyInstance, FastifyPluginOptions } from "fastify";
+import { getAllDataFromTable } from "../controllers/touchpointsController";
 import { 
   GetAllFlightsInWindow,
   GetFlightsByAircraftType,
@@ -9,6 +11,7 @@ import {
  } from "../controllers/touchpointsController";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import test from 'node:test';
 
 dotenv.config();
 
@@ -24,9 +27,44 @@ const pool = new Pool({
 });
 
 
-export const touchpointRoutes = (server: FastifyInstance) => {
+export default async function touchpointRoutes(server: FastifyInstance, opts: FastifyPluginOptions) {
+  server.post("/post/login", async (request, reply) => {
+    const { username, password } = request.body as {
+      username: string;
+      password: string;
+    };
+    const testHash = await bcrypt.hash(password, 10);
+    console.log(testHash);
+
+    try {
+      const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+      const user = result.rows[0];
+
+      if (!user) {
+        return reply.status(401).send({ message:'Invalid username or password' });
+      }
+
+      const doesPasswordMatch = await bcrypt.compare(password, user.password_hash);
+
+      if (!doesPasswordMatch) {
+        return reply.status(401).send({ message:'Invalid username or password' });
+      }
+      
+      const token = server.jwt.sign({
+        id: user.id,
+        username: user.username
+      });
+
+      return reply.send({ token });
+
+    }
+    catch (e) {
+      return reply.status(500).send({ message: e });
+    }
+  });
+    
   // Route to get data between two times on a specific date http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
-  server.get("/api/touchpoint/window", async (request, reply) => {
+  server.get("/api/touchpoint/window", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       const { date, from, to } = request.query as {
         date: string;
@@ -44,8 +82,9 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       reply.status(500).send({ error: "Internal server error" });
     }
   });
+
   // Route to get data by Flight Number http://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
-  server.get("/api/touchpoint/flightnumber", async (request, reply) => {
+  server.get("/api/touchpoint/flightnumber", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       const { flightNumber } = request.query as { flightNumber: string };
       if (!flightNumber) {
@@ -58,8 +97,10 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       reply.status(500).send({ error: "Internal server error" });
     }
   });
+
   // Route to get data by Airline http://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
-  server.get("/api/touchpoint/airline", async (request, reply) => {
+  server.get("/api/touchpoint/airline", { preValidation: [server.authenticate] }, async (request, reply) => {
+
     try {
       const { airlineShortname } = request.query as { airlineShortname: string };
       if (!airlineShortname) {
@@ -73,7 +114,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
     }
   });
     // Route to get data by Touchpoint http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
-    server.get("/api/touchpoint/touchpoint", async (request, reply) => {
+    server.get("/api/touchpoint/touchpoint", { preValidation: [server.authenticate] }, async (request, reply) => {
       try {
         const { touchpoint } = request.query as { touchpoint: string };
         if (!touchpoint) {
@@ -87,7 +128,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       }
     });
       // Route to get data by Aircraft Type http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
-  server.get("/api/touchpoint/aircraft", async (request, reply) => {
+  server.get("/api/touchpoint/aircraft", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       const { aircraftType } = request.query as { aircraftType: string };
       if (!aircraftType) {
@@ -101,7 +142,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
     }
   });
   // Route to get data by Flight ID http://localhost:3000/api/touchpoint/flightid?flightID=585146
-  server.get("/api/touchpoint/flightid", async (request, reply) => {
+  server.get("/api/touchpoint/flightid", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
       const { flightID } = request.query as { flightID: string };
       if (!flightID) {
