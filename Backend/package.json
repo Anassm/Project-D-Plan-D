@@ -33,6 +33,7 @@
     "typescript-eslint": "^8.26.1"
   },
   "dependencies": {
+    "@fastify/cors": "^11.0.1",
     "@fastify/jwt": "^9.1.0",
     "@prisma/client": "^6.5.0",
     "@prisma/internals": "^6.5.0",
