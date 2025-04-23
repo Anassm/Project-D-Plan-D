@@ -15,6 +15,4 @@ const pool = new Pool({
   },
 });
 
-export const flightsRoutes = (server: FastifyInstance) => { 
-
-}
+export const flightsRoutes = (server: FastifyInstance) => {};

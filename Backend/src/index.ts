@@ -13,12 +13,11 @@ server.register(authentication);
 server.register(showRoutes);
 server.register(flightsRoutes);
 
-const port: Number = 3000;
+const port: number = Number(process.env.API_PORT);
 
-
-server.listen({ port: Number(process.env.API_PORT) }, function (err, address) {
+server.listen({ port: port }, function (err, address) {
   if (err) {
-    server.log.error(err);
+    console.error(err.message);
     process.exit(1);
   }
 
