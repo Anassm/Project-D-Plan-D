@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import { DateTime } from "luxon";
 
 dotenv.config();
 
@@ -29,18 +30,20 @@ export async function GetAllFlightsInWindow(
     const totDateStr = `${datum}T${totTijd}`;
 
     // Maak de datums
-    const van = new Date(vanDateStr);
-    const tot = new Date(totDateStr);
+    const van = DateTime.fromFormat(`${datum} ${vanTijd}`, "yyyy-MM-dd HH:mm", { zone: "Europe/Amsterdam" }).plus({ hours: 2 });
+    const tot = DateTime.fromFormat(`${datum} ${totTijd}`, "yyyy-MM-dd HH:mm", { zone: "Europe/Amsterdam" }).plus({ hours: 2 });
 
+    const vanUTC = van.toUTC().toISO();
+    const totUTC = tot.toUTC().toISO();
     // Controleer of de datums valide zijn
-    if (isNaN(van.getTime()) || isNaN(tot.getTime())) {
-      console.log("Invalid van or tot date:", van, tot);
+    if (!van.isValid || !tot.isValid) {
+      console.log("Invalid date(s):", van.toISO(), tot.toISO());
     }
 
     // Voer de database query uit
     const res = await db.query(
       `SELECT * FROM touchpoint WHERE ScheduledLocal BETWEEN $1 AND $2`,
-      [van.toISOString(), tot.toISOString()]
+      [van, tot]
     );
 
     return res.rows as unknown as JSON;
