@@ -14,7 +14,7 @@ const pool = new Pool({
   },
 });
 
-//voorbeeld: http://localhost:3000/api/touchpoint?date=2024-09-29&from=14:00&to=15:00
+
 export async function GetAllFlightsInWindow(
   datum: string,              // verwacht nu "2024-09-29"
   vanTijd: string,            // verwacht nu "14:00"
@@ -46,25 +46,6 @@ export async function GetAllFlightsInWindow(
     return res.rows as unknown as JSON;
   } catch (err) {
     throw err;
-  }
-}
-export async function getAllDataFromTable(
-  table: string,
-  amount: number = 0
-): Promise<any> {
-  const client = await pool.connect();
-  try {
-    if (amount == 0) {
-      const res = await client.query(`SELECT * FROM ${table}`);
-      return res.rows;
-    }
-    const res = await client.query(`SELECT * FROM ${table} LIMIT ${amount}`);
-    return res.rows;
-  } catch (err) {
-    console.log(err);
-    throw err;
-  } finally {
-    client.release();
   }
 }
 

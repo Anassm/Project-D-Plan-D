@@ -25,7 +25,7 @@ const pool = new Pool({
 
 
 export const touchpointRoutes = (server: FastifyInstance) => {
-  // Route to get data between two times on a specific date
+  // Route to get data between two times on a specific date http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
   server.get("/api/touchpoint/window", async (request, reply) => {
     try {
       const { date, from, to } = request.query as {
@@ -44,7 +44,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       reply.status(500).send({ error: "Internal server error" });
     }
   });
-  // Route to get data by Flight Number
+  // Route to get data by Flight Number http://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
   server.get("/api/touchpoint/flightnumber", async (request, reply) => {
     try {
       const { flightNumber } = request.query as { flightNumber: string };
@@ -58,7 +58,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       reply.status(500).send({ error: "Internal server error" });
     }
   });
-  // Route to get data by Airline
+  // Route to get data by Airline http://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
   server.get("/api/touchpoint/airline", async (request, reply) => {
     try {
       const { airlineShortname } = request.query as { airlineShortname: string };
@@ -72,7 +72,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       reply.status(500).send({ error: "Internal server error" });
     }
   });
-    // Route to get data by Touchpoint
+    // Route to get data by Touchpoint http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
     server.get("/api/touchpoint/touchpoint", async (request, reply) => {
       try {
         const { touchpoint } = request.query as { touchpoint: string };
@@ -86,7 +86,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
         reply.status(500).send({ error: "Internal server error" });
       }
     });
-      // Route to get data by Aircraft Type
+      // Route to get data by Aircraft Type http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
   server.get("/api/touchpoint/aircraft", async (request, reply) => {
     try {
       const { aircraftType } = request.query as { aircraftType: string };
@@ -100,7 +100,7 @@ export const touchpointRoutes = (server: FastifyInstance) => {
       reply.status(500).send({ error: "Internal server error" });
     }
   });
-  // Route to get data by Flight ID
+  // Route to get data by Flight ID http://localhost:3000/api/touchpoint/flightid?flightID=585146
   server.get("/api/touchpoint/flightid", async (request, reply) => {
     try {
       const { flightID } = request.query as { flightID: string };
