@@ -4,6 +4,7 @@ import showRoutes from "./routes/touchpointsRoutes";
 import { flightsRoutes } from "./routes/flightsRoutes";
 import dotenv from "dotenv";
 import authentication from "./plugins/authentication";
+import swaggerPlugin from "./plugins/swagger";
 
 dotenv.config();
 const backendPort: number = Number(process.env.API_PORT);
@@ -13,6 +14,7 @@ server.register(cors, {
   origin: "http://localhost:5173",
   credentials: true,
 });
+server.register(swaggerPlugin);
 server.register(authentication);
 server.register(showRoutes);
 server.register(flightsRoutes);
