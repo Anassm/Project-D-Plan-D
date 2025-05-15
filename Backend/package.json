@@ -35,6 +35,7 @@
   "dependencies": {
     "@fastify/cors": "^11.0.1",
     "@fastify/jwt": "^9.1.0",
+    "@fastify/rate-limit": "^10.2.2",
     "@prisma/client": "^6.5.0",
     "@prisma/internals": "^6.5.0",
     "bcrypt": "^5.1.1",

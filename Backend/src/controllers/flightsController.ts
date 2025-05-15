@@ -13,6 +13,3 @@ const pool = new Pool({
         rejectUnauthorized: false, // safe for dev, use certs in prod
     },
 });
-
-
-  
