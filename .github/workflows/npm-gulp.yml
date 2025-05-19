@@ -48,6 +48,10 @@ jobs:
       working-directory: backend
       shell: bash
       run: |
+        export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
+        export API_PORT="${{ secrets.API_PORT }}"
+        export DATABASE_PORT="${{ secrets.DATABASE_PORT }}"
+
         npm run serve &
         SERVER_PID=$!
         sleep 5
