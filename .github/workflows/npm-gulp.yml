@@ -23,10 +23,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Set variables
+      working-directory: backend
       run: |
-        cd backend
         touch .env
-        echo JWT_SECRET_KEY="This is a secret key"
+        echo JWT_SECRET_KEY="This is a secret key" >> .env
         cat .env
 
     - name: Build
