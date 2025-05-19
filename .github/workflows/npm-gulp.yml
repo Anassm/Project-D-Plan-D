@@ -25,4 +25,6 @@ jobs:
     - name: Build
       run: |
         npm install
-        gulp
+        cd backend
+        npm install
+        npm run dev
