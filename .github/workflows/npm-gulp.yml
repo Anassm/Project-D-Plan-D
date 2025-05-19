@@ -28,7 +28,7 @@ jobs:
         touch .env
         echo JWT_SECRET_KEY="This is a secret key" >> .env
         echo API_PORT=3000 >> .env
-        DATABASE_PORT=5432 >> .env
+        echo DATABASE_PORT=5432 >> .env
         cat .env
 
     - name: Build
