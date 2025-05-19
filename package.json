@@ -12,7 +12,9 @@
     "source-map-js": "^1.2.1",
     "vite": "^6.2.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^5.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
