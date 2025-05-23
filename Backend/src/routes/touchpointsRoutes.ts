@@ -10,6 +10,9 @@ import {
 } from "../controllers/touchpointsController";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import { AddFlight } from "../controllers/touchpointsController";
+import { DeleteFlightByID } from "../controllers/touchpointsController";
+import { UpdateFlightByID } from "../controllers/touchpointsController";
 import test from "node:test";
 
 dotenv.config();
@@ -206,6 +209,93 @@ export default async function touchpointRoutes(
   server.get("/health", async (req, res) => {
     res.status(200).send("OK");
   });
+
+  // add
+  // http://localhost:3000/api/touchpoint/add
+  // to test in postman make a json in the body with the new touchPoint
+
+  server.post("/api/touchpoint/add", { preValidation: [server.authenticate] }, async (request, reply) => {
+    try {
+      // Save new flight data
+      const newFlight = await AddFlight(request.body);
+      reply.send({
+        message: "Flight added",
+        // Return inserted flight row
+        data: newFlight
+      });
+    } catch (err) {
+      reply.status(500).send({ error: "Failed to add flight", details: (err as any).message });
+    }
+  });
+
+  // delete touchPoint by FlightID
+  // http://localhost:3000/api/touchpoint/delete?flightid=(id of flight to delete) 
+  server.delete(
+    "/api/touchpoint/delete",
+    { preValidation: [server.authenticate] },
+    async (request, reply) => {
+      try {
+        // Extract flightid from query
+        const { flightid } = request.query as { flightid: string };
+
+        if (!flightid) {
+          return reply
+            .status(400)
+            .send({ error: "Missing flightID query param" });
+        }
+
+        const deletedFlight = await DeleteFlightByID(flightid);
+
+        if (!deletedFlight) {
+          return reply.status(404).send({ error: "Flight not found" });
+        }
+
+        reply.send({
+          message: "Flight deleted successfully",
+          data: deletedFlight,
+        });
+      } catch (err) {
+        console.error("Error deleting flight:", err);
+        reply
+          .status(500)
+          .send({ error: "Failed to delete flight", details: (err as any).message });
+      }
+    }
+  );
+
+  // Update a flight by FlightID
+  // PUT http://localhost:3000/api/touchpoint/update?flightid=(flightid to update)
+  // to test use postman, make a json in the body and add the items to change.
+  server.put(
+    "/api/touchpoint/update",
+    { preValidation: [server.authenticate] },
+    async (request, reply) => {
+      try {
+        const { flightid } = request.query as { flightid: string };
+
+        if (!flightid) {
+          return reply
+            .status(400)
+            .send({ error: "Missing flightID query param" });
+        }
+
+        const updatedFlight = await UpdateFlightByID(flightid, request.body as Partial<any>);
+
+        if (!updatedFlight) {
+          return reply.status(404).send({ error: "Flight not found" });
+        }
+
+        reply.send({
+          message: "Flight updated successfully",
+          data: updatedFlight,
+        });
+      } catch (err) {
+        console.error("Error updating flight:", err);
+        reply.status(500).send({ error: "Failed to update flight", details: (err as any).message });
+      }
+    }
+  );
+
 }
 
 // function isNumeric(str: string): boolean {
