@@ -30,8 +30,15 @@
   border: none;
   transition: background 0.3s ease;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .button:hover {
   background-color: #e1223f;
+}
+
+.userInfo {
+  font-weight: bold;
+  margin-right: 3rem;
+  font-size: 18px;
 }

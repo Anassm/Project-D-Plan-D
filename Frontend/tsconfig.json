@@ -6,5 +6,7 @@
   ],
   "compilerOptions": {
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

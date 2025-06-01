@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../../assets/logo.png";
 import styles from "./Header.module.css";
+import { IUser } from "../../App";
 
 interface IEndpoint {
   name: string;
@@ -9,20 +10,20 @@ interface IEndpoint {
 }
 
 interface HeaderProps {
+  user: IUser | null;
   setData: React.Dispatch<React.SetStateAction<string>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
+  onLogout: () => void;
 }
 
 export default function Header({
+  user,
   setData,
   setLoading,
   setDescription,
+  onLogout,
 }: HeaderProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
-    localStorage.getItem("token") !== null
-  );
-
   const demo: Array<IEndpoint> = [
     {
       name: "time window, specific date",
@@ -55,42 +56,6 @@ export default function Header({
       url: "https://localhost:3000/api/touchpoint/flightid?flightID=638004",
     },
   ];
-
-  async function login() {
-    try {
-      const res = await fetch("https://localhost:3000/post/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: "admin1",
-          password: "Admin1Admin",
-        }),
-      });
-
-      const result = await res.json();
-
-      if (result.token) {
-        localStorage.setItem("token", result.token);
-        setIsLoggedIn(true);
-        setData("");
-        setDescription("");
-        alert("Login successful.");
-      } else {
-        setData("Login failed.");
-      }
-    } catch (err) {
-      console.error(err);
-      setData("Login error.");
-    }
-  }
-
-  function logout() {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    setDescription("");
-    setData("");
-    alert("Logged out.");
-  }
 
   async function fetchData(endpoint: IEndpoint) {
     try {
@@ -125,15 +90,12 @@ export default function Header({
     }
   }
 
-  const displayButtons = demo.map((endpoint) => (
-    <span
-      className={styles.button}
-      key={endpoint.name}
-      onClick={() => fetchData(endpoint)}
-    >
-      {endpoint.name}
-    </span>
-  ));
+  function logout() {
+    localStorage.removeItem("token");
+    onLogout();
+    setDescription("");
+    setData("");
+  }
 
   return (
     <header>
@@ -144,18 +106,25 @@ export default function Header({
       />
 
       <div className={styles.buttonContainer}>
-        <div className={styles.leftButtons}>{displayButtons}</div>
+        <div className={styles.leftButtons}>{demo.map((endpoint) => (
+          <span
+            className={styles.button}
+            key={endpoint.name}
+            onClick={() => fetchData(endpoint)}
+          >
+            {endpoint.name}
+          </span>
+        ))}</div>
 
         <div className={styles.loginWrapper}>
-          {isLoggedIn ? (
-            <span className={styles.button} onClick={logout}>
-              Logout
-            </span>
-          ) : (
-            <span className={styles.button} onClick={login}>
-              Login
-            </span>
-          )}
+          {user ? (
+            <>
+              <span className={styles.userInfo}>Welcome, {user.username} | {user.role}</span>
+              <span className={styles.button} onClick={logout}>
+                Logout
+              </span>
+            </>
+          ) : null}
         </div>
       </div>
     </header>

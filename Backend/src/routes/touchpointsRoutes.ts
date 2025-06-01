@@ -490,7 +490,7 @@ export default async function touchpointRoutes(
   server.get(
     "/api/touchpoint/flightid",
     {
-      preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])],
+      preValidation: [server.authenticate, server.authorizeRoles(["head_administrator"])],
       schema: {
         description: "Get flights by flight ID",
         tags: ["Touchpoints"],
