@@ -226,7 +226,7 @@ export default async function touchpointRoutes(
     }
   );
 
-  // Route to get data between two times on a specific date http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
+  // Route to get data between two times on a specific date https://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
   server.get(
     "/api/touchpoint/window",
     {
@@ -276,7 +276,7 @@ export default async function touchpointRoutes(
     }
   );
 
-  // Route to get data by Flight Number http://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
+  // Route to get data by Flight Number https://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
   server.get(
     "/api/touchpoint/flightnumber",
     {
@@ -319,7 +319,7 @@ export default async function touchpointRoutes(
     }
   );
 
-  // Route to get data by Airline http://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
+  // Route to get data by Airline https://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
   server.get(
     "/api/touchpoint/airline",
     {
@@ -376,7 +376,7 @@ export default async function touchpointRoutes(
     }
   );
 
-  // Route to get data by Touchpoint http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
+  // Route to get data by Touchpoint https://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
   server.get(
     "/api/touchpoint/touchpoint",
     {
@@ -431,7 +431,7 @@ export default async function touchpointRoutes(
     }
   );
 
-  // Route to get data by Aircraft Type http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
+  // Route to get data by Aircraft Type https://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
   server.get(
     "/api/touchpoint/aircraft",
     {
@@ -486,7 +486,7 @@ export default async function touchpointRoutes(
     }
   );
 
-  // Route to get data by Flight ID http://localhost:3000/api/touchpoint/flightid?flightID=585146
+  // Route to get data by Flight ID https://localhost:3000/api/touchpoint/flightid?flightID=585146
   server.get(
     "/api/touchpoint/flightid",
     {

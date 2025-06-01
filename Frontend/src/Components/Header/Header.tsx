@@ -27,38 +27,38 @@ export default function Header({
     {
       name: "time window, specific date",
       description: "Route to get data between two times on a specific date.",
-      url: "http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00",
+      url: "https://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00",
     },
     {
       name: "Flight number",
       description: "Route to get data by Flight Number.",
-      url: "http://localhost:3000/api/touchpoint/flightnumber?flightNumber=TRA5690",
+      url: "https://localhost:3000/api/touchpoint/flightnumber?flightNumber=TRA5690",
     },
     {
       name: "Airline",
       description: "Route to get data by Airline.",
-      url: "http://localhost:3000/api/touchpoint/airline?airlineShortname=LUXAIR",
+      url: "https://localhost:3000/api/touchpoint/airline?airlineShortname=LUXAIR",
     },
     {
       name: "Touchpoint",
       description: "Route to get data by Touchpoint.",
-      url: "http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Niet-Schengenhal",
+      url: "https://localhost:3000/api/touchpoint/touchpoint?touchpoint=Niet-Schengenhal",
     },
     {
       name: "Aircraft type",
       description: "Route to get data by Aircraft Type.",
-      url: "http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N",
+      url: "https://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N",
     },
     {
       name: "Flight ID",
       description: "Route to get data by Flight ID.",
-      url: "http://localhost:3000/api/touchpoint/flightid?flightID=638004",
+      url: "https://localhost:3000/api/touchpoint/flightid?flightID=638004",
     },
   ];
 
   async function login() {
     try {
-      const res = await fetch("http://localhost:3000/post/login", {
+      const res = await fetch("https://localhost:3000/post/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

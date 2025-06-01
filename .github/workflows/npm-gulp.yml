@@ -56,7 +56,7 @@ jobs:
           SERVER_PID=$!
           sleep 5
 
-          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:${{ secrets.API_PORT }}/health)
+          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' https://localhost:${{ secrets.API_PORT }}/health)
 
           kill $SERVER_PID
 

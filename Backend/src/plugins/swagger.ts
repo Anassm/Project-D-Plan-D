@@ -14,7 +14,7 @@ export default fp(async (fastify) => {
       components: {
         securitySchemes: {
           bearerAuth: {
-            type: "http",
+            type: "https",
             scheme: "bearer",
             bearerFormat: "JWT",
           },
