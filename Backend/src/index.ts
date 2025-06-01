@@ -17,7 +17,7 @@ server.register(authentication);
 server.register(showRoutes);
 server.register(flightsRoutes);
 
-server.listen({ port: backendPort }, function (err, address) {
+server.listen({ port: backendPort, host: "0.0.0.0" }, function (err, address) {
   if (err) {
     console.error(err);
     process.exit(1);
