@@ -1,0 +1,69 @@
+name: NodeJS with Gulp
+
+on:
+  push:
+    branches: ["development"]
+  pull_request:
+    branches: ["development"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Set variables
+        working-directory: backend
+        shell: bash
+        run: |
+          touch .env
+          echo JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo API_PORT="${{ secrets.API_PORT }}" >> .env
+          echo DATABASE_PORT="${{ secrets.DATABASE_PORT }}" >> .env
+
+      - name: Install dependencies
+        run: |
+          npm install
+          cd backend
+          npm install
+          cd ../frontend
+          npm install
+
+      - name: Build typescript code (backend)
+        working-directory: backend
+        run: |
+          npm run build
+
+      - name: Run and test compiled server (backend)
+        working-directory: backend
+        shell: bash
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          API_PORT: ${{ secrets.API_PORT }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+        run: |
+          npm run serve &
+          SERVER_PID=$!
+          sleep 5
+
+          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:${{ secrets.API_PORT }}/health)
+
+          kill $SERVER_PID
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ Health endpoint responded with 200"
+            exit 0
+          else
+            echo "❌ Health endpoint did not respond with 200, got $HTTP_STATUS"
+            exit 1
+          fi
