@@ -73,7 +73,7 @@ export default async function touchpointRoutes(
   });
 
   server.post("/post/create_account",
-  { preValidation: [server.authenticate, server.authorizeRoles(["administrator"])] },
+  // { preValidation: [server.authenticate, server.authorizeRoles(["administrator"])] },
   async (request, reply) => {
     const { username, password } = request.body as {
       username: string;
@@ -126,14 +126,14 @@ export default async function touchpointRoutes(
 );
 
   server.put("/put/update_role",
-    { preValidation: [server.authenticate, server.authorizeRoles(["administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["head_administrator"])] },
     async (request, reply) => {
       const { username, newRole } = request.body as {
       username: string;
       newRole: string;
     };
 
-    const validRoles = ['employee', 'administrator'];
+    const validRoles = ['employee', 'administrator', "head_administrator"];
 
     if (!username || !newRole) {
       return reply.status(400).send({ error: 'ERROR: Missing username or newRole in request body' });
@@ -167,7 +167,7 @@ export default async function touchpointRoutes(
   // Route to get data between two times on a specific date http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
   server.get(
     "/api/touchpoint/window",
-    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])] },
     async (request, reply) => {
       try {
         const { date, from, to } = request.query as {
@@ -193,7 +193,7 @@ export default async function touchpointRoutes(
   // Route to get data by Flight Number http://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
   server.get(
     "/api/touchpoint/flightnumber",
-    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])] },
     async (request, reply) => {
       try {
         const { flightNumber } = request.query as { flightNumber: string };
@@ -214,7 +214,7 @@ export default async function touchpointRoutes(
   // Route to get data by Airline http://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
   server.get(
     "/api/touchpoint/airline",
-    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])] },
     async (request, reply) => {
       try {
         const { airlineShortname } = request.query as {
@@ -236,7 +236,7 @@ export default async function touchpointRoutes(
   // Route to get data by Touchpoint http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
   server.get(
     "/api/touchpoint/touchpoint",
-    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])] },
     async (request, reply) => {
       try {
         const { touchpoint } = request.query as { touchpoint: string };
@@ -256,7 +256,7 @@ export default async function touchpointRoutes(
   // Route to get data by Aircraft Type http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
   server.get(
     "/api/touchpoint/aircraft",
-    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])] },
     async (request, reply) => {
       try {
         const { aircraftType } = request.query as { aircraftType: string };
@@ -276,7 +276,7 @@ export default async function touchpointRoutes(
   // Route to get data by Flight ID http://localhost:3000/api/touchpoint/flightid?flightID=585146
   server.get(
     "/api/touchpoint/flightid",
-    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator", "head_administrator"])] },
     async (request, reply) => {
       try {
         const { flightID } = request.query as { flightID: string };
