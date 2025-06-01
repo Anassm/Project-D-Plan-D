@@ -10,6 +10,18 @@ export default fp(async (fastify) => {
         version: "1.0.0",
         description: "API documentation for RTHA project",
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      },
+      security: [
+        { bearerAuth: [] }
+      ],
     },
   });
 
