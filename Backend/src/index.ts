@@ -4,14 +4,23 @@ import showRoutes from "./routes/touchpointsRoutes";
 import { flightsRoutes } from "./routes/flightsRoutes";
 import dotenv from "dotenv";
 import authentication from "./plugins/authentication";
+import fs from 'fs';
+import path from 'path';
 import swaggerPlugin from "./plugins/swagger";
 import rateLimit from "@fastify/rate-limit";
 
 dotenv.config();
 const backendPort: number = Number(process.env.API_PORT);
 
+const httpsOptions = {
+  key: fs.readFileSync(path.join(__dirname, 'server.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'server.cert')),
+};
 
-export const server = Fastify();
+export const server = Fastify({
+  https: httpsOptions,
+});
+
 server.register(cors, {
   origin: "http://localhost:5173",
   credentials: true,
