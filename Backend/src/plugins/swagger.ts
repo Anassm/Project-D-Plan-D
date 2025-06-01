@@ -1,6 +1,7 @@
 import fp from "fastify-plugin";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
+import { GetFlightsByFlightNumber } from "../controllers/touchpointsController";
 
 export default fp(async (fastify) => {
   await fastify.register(swagger, {
@@ -19,13 +20,14 @@ export default fp(async (fastify) => {
           },
         },
       },
-      security: [
-        { bearerAuth: [] }
-      ],
+      security: [{ bearerAuth: [] }],
     },
   });
 
   await fastify.register(swaggerUi, {
     routePrefix: "/docs",
+    uiConfig: {
+      // docExpansion: 'full'
+    },
   });
 });
