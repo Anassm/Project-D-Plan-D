@@ -24,4 +24,13 @@ export default fp(async (fastify, opts) => {
             reply.send(e);
         }
     });
+
+    fastify.decorate('authorizeRoles', function (roles: string[]) {
+        return async function (request: FastifyRequest, reply: FastifyReply) {
+            const user = request.user as { role?: string };
+            if (!user || !roles.includes(user.role || '')) {
+                return reply.status(403).send({ error: 'ERROR: you do not have permission to access this endpoint!'});
+            }
+        };
+    });
 });

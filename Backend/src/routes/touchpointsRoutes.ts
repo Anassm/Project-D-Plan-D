@@ -35,7 +35,6 @@ export default async function touchpointRoutes(
       password: string;
     };
     const testHash = await bcrypt.hash(password, 10);
-    console.log(testHash);
 
     try {
       const result = await pool.query(
@@ -64,6 +63,7 @@ export default async function touchpointRoutes(
       const token = server.jwt.sign({
         id: user.id,
         username: user.username,
+        role: user.role
       });
 
       return reply.send({ token });
@@ -72,10 +72,102 @@ export default async function touchpointRoutes(
     }
   });
 
+  server.post("/post/create_account",
+  { preValidation: [server.authenticate, server.authorizeRoles(["administrator"])] },
+  async (request, reply) => {
+    const { username, password } = request.body as {
+      username: string;
+      password: string;
+    };
+
+    if (!username || !password) {
+      return reply.status(400).send({ error: 'Missing username or password' });
+    }
+
+    try {
+      const checkUser = await pool.query(
+        'SELECT 1 FROM users WHERE username = $1',
+        [username]
+      );
+
+      if (!checkUser)
+      {
+        reply.status(500).send({ error: 'Internal server error' });
+      }
+
+      if (checkUser.rowCount && checkUser.rowCount > 0) {
+        return reply.status(409).send({ error: 'Username already exists' });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const result = await pool.query(
+        `INSERT INTO users (username, password_hash, role)
+         VALUES ($1, $2, $3)
+         RETURNING id, username, role`,
+        [username, hashedPassword, 'employee']
+      );
+
+      const newUser = result.rows[0];
+
+      reply.status(201).send({
+        message: 'Account created successfully',
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          role: newUser.role,
+        },
+      });
+    } catch (error) {
+      console.error('Error creating account:', error);
+      reply.status(500).send({ error: 'Internal server error' });
+    }
+  }
+);
+
+  server.put("/put/update_role",
+    { preValidation: [server.authenticate, server.authorizeRoles(["administrator"])] },
+    async (request, reply) => {
+      const { username, newRole } = request.body as {
+      username: string;
+      newRole: string;
+    };
+
+    const validRoles = ['employee', 'administrator'];
+
+    if (!username || !newRole) {
+      return reply.status(400).send({ error: 'ERROR: Missing username or newRole in request body' });
+    }
+
+    if (!validRoles.includes(newRole)) {
+      return reply.status(400).send({ error: 'ERROR: specified role was invalid' });
+    }
+
+    try {
+      const result = await pool.query(
+        `UPDATE users SET role = $1 WHERE username = $2 RETURNING id, username, role`,
+        [newRole, username]
+      );
+
+      if (result.rowCount === 0) {
+        return reply.status(404).send({ error: 'User not found' });
+      }
+
+      reply.send({
+        message: `Role updated successfully`,
+        user: result.rows[0],
+      });
+    } catch (error) {
+      console.error(error);
+      reply.status(500).send({ error: 'ERROR: Internal server error' });
+    }
+    }
+  );
+
   // Route to get data between two times on a specific date http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
   server.get(
     "/api/touchpoint/window",
-    { preValidation: [server.authenticate] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
     async (request, reply) => {
       try {
         const { date, from, to } = request.query as {
@@ -101,7 +193,7 @@ export default async function touchpointRoutes(
   // Route to get data by Flight Number http://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
   server.get(
     "/api/touchpoint/flightnumber",
-    { preValidation: [server.authenticate] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
     async (request, reply) => {
       try {
         const { flightNumber } = request.query as { flightNumber: string };
@@ -122,7 +214,7 @@ export default async function touchpointRoutes(
   // Route to get data by Airline http://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
   server.get(
     "/api/touchpoint/airline",
-    { preValidation: [server.authenticate] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
     async (request, reply) => {
       try {
         const { airlineShortname } = request.query as {
@@ -144,7 +236,7 @@ export default async function touchpointRoutes(
   // Route to get data by Touchpoint http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
   server.get(
     "/api/touchpoint/touchpoint",
-    { preValidation: [server.authenticate] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
     async (request, reply) => {
       try {
         const { touchpoint } = request.query as { touchpoint: string };
@@ -164,7 +256,7 @@ export default async function touchpointRoutes(
   // Route to get data by Aircraft Type http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
   server.get(
     "/api/touchpoint/aircraft",
-    { preValidation: [server.authenticate] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
     async (request, reply) => {
       try {
         const { aircraftType } = request.query as { aircraftType: string };
@@ -184,7 +276,7 @@ export default async function touchpointRoutes(
   // Route to get data by Flight ID http://localhost:3000/api/touchpoint/flightid?flightID=585146
   server.get(
     "/api/touchpoint/flightid",
-    { preValidation: [server.authenticate] },
+    { preValidation: [server.authenticate, server.authorizeRoles(["employee", "administrator"])] },
     async (request, reply) => {
       try {
         const { flightID } = request.query as { flightID: string };
