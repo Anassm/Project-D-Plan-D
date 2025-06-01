@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@fastify/rate-limit": "^10.3.0",
     "nanoid": "^3.3.10",
     "picocolors": "^1.1.1",
     "postcss": "^8.5.3",
