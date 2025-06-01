@@ -22,23 +22,12 @@ server.register(showRoutes);
 server.register(flightsRoutes);
 
 const startServer = async () => {
-  const server = Fastify();
-
   await server.register(rateLimit, {
     max: 100,
     timeWindow: "1 minute",
     allowList: ["127.0.0.1"],
     ban: 2,
   });
-
-  server.register(cors, {
-    origin: "http://localhost:5173",
-    credentials: true,
-  });
-
-  server.register(authentication);
-  server.register(showRoutes);
-  server.register(flightsRoutes);
 
   try {
     await server.listen({ port: backendPort, host: "0.0.0.0" });
