@@ -96,7 +96,7 @@ export default async function touchpointRoutes(
       }
 
       if (checkUser.rowCount && checkUser.rowCount > 0) {
-        return reply.status(409).send({ error: 'Username already exists' });
+        return reply.status(409).send({ error: 'ERROR: Username already exists' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -133,14 +133,14 @@ export default async function touchpointRoutes(
       newRole: string;
     };
 
-    const validRoles = ['employee', 'administrator', "head_administrator"];
+    const validRoles = ['employee', 'administrator', 'head_administrator'];
 
     if (!username || !newRole) {
       return reply.status(400).send({ error: 'ERROR: Missing username or newRole in request body' });
     }
 
     if (!validRoles.includes(newRole)) {
-      return reply.status(400).send({ error: 'ERROR: specified role was invalid' });
+      return reply.status(400).send({ error: 'ERROR: specified role was invalid! Valid roles are: employee, administrator, head_administrator' });
     }
 
     try {
