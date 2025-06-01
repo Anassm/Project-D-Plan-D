@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "esbuild": "^0.25.1",
     "nanoid": "^3.3.10",
     "picocolors": "^1.1.1",
     "postcss": "^8.5.3",
@@ -13,6 +12,7 @@
     "vite": "^6.2.2"
   },
   "devDependencies": {
+    "esbuild": "^0.25.5",
     "gulp": "^5.0.0"
   },
   "scripts": {
