@@ -448,3 +448,11 @@ export default async function touchpointRoutes(
     }
   );
 }
+
+  // TIJDELIJK VERWIJDER LATER
+  server.get("/health", async (req, res) => {
+    res.status(200).send("OK");
+  });
+}
+
+

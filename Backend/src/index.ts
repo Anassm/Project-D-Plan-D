@@ -5,9 +5,11 @@ import { flightsRoutes } from "./routes/flightsRoutes";
 import dotenv from "dotenv";
 import authentication from "./plugins/authentication";
 import swaggerPlugin from "./plugins/swagger";
+import rateLimit from "@fastify/rate-limit";
 
 dotenv.config();
 const backendPort: number = Number(process.env.API_PORT);
+
 
 export const server = Fastify();
 server.register(cors, {
@@ -19,11 +21,32 @@ server.register(authentication);
 server.register(showRoutes);
 server.register(flightsRoutes);
 
-server.listen({ port: backendPort }, function (err, address) {
-  if (err) {
+const startServer = async () => {
+  const server = Fastify();
+
+  await server.register(rateLimit, {
+    max: 100,
+    timeWindow: "1 minute",
+    allowList: ["127.0.0.1"],
+    ban: 2,
+  });
+
+  server.register(cors, {
+    origin: "http://localhost:5173",
+    credentials: true,
+  });
+
+  server.register(authentication);
+  server.register(showRoutes);
+  server.register(flightsRoutes);
+
+  try {
+    await server.listen({ port: backendPort, host: "0.0.0.0" });
+    console.log(`Server listening on port ${backendPort}`);
+  } catch (err) {
     console.error(err);
     process.exit(1);
   }
+};
 
-  console.log(`Server listening on port ${backendPort}`);
-});
+startServer(); // <--- roept de async functie aan
