@@ -14,11 +14,10 @@ const pool = new Pool({
   },
 });
 
-
 export async function GetAllFlightsInWindow(
-  datum: string,              // verwacht nu "2024-09-29"
-  vanTijd: string,            // verwacht nu "14:00"
-  totTijd: string             // verwacht nu "15:00"
+  datum: string, // verwacht nu "2024-09-29"
+  vanTijd: string, // verwacht nu "14:00"
+  totTijd: string // verwacht nu "15:00"
 ): Promise<JSON> {
   try {
     //database connection setup
@@ -49,7 +48,9 @@ export async function GetAllFlightsInWindow(
   }
 }
 
-export async function GetFlightsByFlightNumber(flightNumber: string): Promise<JSON> {
+export async function GetFlightsByFlightNumber(
+  flightNumber: string
+): Promise<JSON> {
   try {
     const db = await pool.connect();
     const res = await db.query(
@@ -62,7 +63,9 @@ export async function GetFlightsByFlightNumber(flightNumber: string): Promise<JS
   }
 }
 
-export async function GetFlightsByAirline(airlineShortname: string): Promise<JSON> {
+export async function GetFlightsByAirline(
+  airlineShortname: string
+): Promise<JSON> {
   try {
     const db = await pool.connect();
     const res = await db.query(
@@ -75,7 +78,9 @@ export async function GetFlightsByAirline(airlineShortname: string): Promise<JSO
   }
 }
 
-export async function GetFlightsByTouchpoint(touchpoint: string): Promise<JSON> {
+export async function GetFlightsByTouchpoint(
+  touchpoint: string
+): Promise<JSON> {
   try {
     const db = await pool.connect();
     const res = await db.query(
@@ -88,7 +93,9 @@ export async function GetFlightsByTouchpoint(touchpoint: string): Promise<JSON> 
   }
 }
 
-export async function GetFlightsByAircraftType(aircraftType: string): Promise<JSON> {
+export async function GetFlightsByAircraftType(
+  aircraftType: string
+): Promise<JSON> {
   try {
     const db = await pool.connect();
     const res = await db.query(
@@ -104,13 +111,11 @@ export async function GetFlightsByAircraftType(aircraftType: string): Promise<JS
 export async function GetFlightsByFlightID(flightID: string): Promise<JSON> {
   try {
     const db = await pool.connect();
-    const res = await db.query(
-      `SELECT * FROM touchpoint WHERE FlightID = $1`,
-      [flightID]
-    );
+    const res = await db.query(`SELECT * FROM touchpoint WHERE FlightID = $1`, [
+      flightID,
+    ]);
     return Promise.resolve(res.rows as unknown as JSON);
   } catch (err) {
     throw err;
   }
 }
-
