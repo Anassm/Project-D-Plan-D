@@ -1,13 +1,14 @@
 import bcrypt from 'bcrypt';
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
-import { 
+import {
   GetAllFlightsInWindow,
   GetFlightsByAircraftType,
   GetFlightsByAirline,
   GetFlightsByFlightNumber,
   GetFlightsByTouchpoint,
   GetFlightsByFlightID
- } from "../controllers/touchpointsController";
+} from "../controllers/touchpointsController";
+import { createQueryRoute } from "./helperRoutes";
 import { Pool } from "pg";
 import dotenv from "dotenv";
 import test from 'node:test';
@@ -37,18 +38,19 @@ export default async function touchpointRoutes(server: FastifyInstance, opts: Fa
 
     try {
       const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+      console.log(result)
       const user = result.rows[0];
 
       if (!user) {
-        return reply.status(401).send({ message:'Invalid username or password' });
+        return reply.status(401).send({ message: 'Invalid username or password' });
       }
 
       const doesPasswordMatch = await bcrypt.compare(password, user.password_hash);
 
       if (!doesPasswordMatch) {
-        return reply.status(401).send({ message:'Invalid username or password' });
+        return reply.status(401).send({ message: 'Invalid username or password' });
       }
-      
+
       const token = server.jwt.sign({
         id: user.id,
         username: user.username
@@ -61,7 +63,7 @@ export default async function touchpointRoutes(server: FastifyInstance, opts: Fa
       return reply.status(500).send({ message: e });
     }
   });
-    
+
   // Route to get data between two times on a specific date http://localhost:3000/api/touchpoint/window?date=2024-09-29&from=14:00&to=15:00
   server.get("/api/touchpoint/window", { preValidation: [server.authenticate] }, async (request, reply) => {
     try {
@@ -81,79 +83,41 @@ export default async function touchpointRoutes(server: FastifyInstance, opts: Fa
       reply.status(500).send({ error: "Internal server error" });
     }
   });
+  createQueryRoute<{ flightNumber: string }>(
+    server,
+    "/api/touchpoint/flightnumber",
+    "flightNumber",
+    GetFlightsByFlightNumber
+  );
 
-  // Route to get data by Flight Number http://localhost:3000/api/touchpoint/flightnumber?flightNumber=PGT1261
-  server.get("/api/touchpoint/flightnumber", { preValidation: [server.authenticate] }, async (request, reply) => {
-    try {
-      const { flightNumber } = request.query as { flightNumber: string };
-      if (!flightNumber) {
-        return reply.status(400).send({ error: "Missing flightNumber query param" });
-      }
-      const data = await GetFlightsByFlightNumber(flightNumber);
-      reply.send(data);
-    } catch (err) {
-      console.error("Error:", err);
-      reply.status(500).send({ error: "Internal server error" });
-    }
-  });
+  createQueryRoute<{ airlineShortname: string }>(
+    server,
+    "/api/touchpoint/airline",
+    "airlineShortname",
+    GetFlightsByAirline
+  );
 
-  // Route to get data by Airline http://localhost:3000/api/touchpoint/airline?airlineShortname=PEGASUS
-  server.get("/api/touchpoint/airline", { preValidation: [server.authenticate] }, async (request, reply) => {
+  createQueryRoute<{ touchpoint: string }>(
+    server,
+    "/api/touchpoint/touchpoint",
+    "touchpoint",
+    GetFlightsByTouchpoint
+  );
 
-    try {
-      const { airlineShortname } = request.query as { airlineShortname: string };
-      if (!airlineShortname) {
-        return reply.status(400).send({ error: "Missing airlineShortname query param" });
-      }
-      const data = await GetFlightsByAirline(airlineShortname);
-      reply.send(data);
-    } catch (err) {
-      console.error("Error:", err);
-      reply.status(500).send({ error: "Internal server error" });
-    }
-  });
-    // Route to get data by Touchpoint http://localhost:3000/api/touchpoint/touchpoint?touchpoint=Aankomsthal
-    server.get("/api/touchpoint/touchpoint", { preValidation: [server.authenticate] }, async (request, reply) => {
-      try {
-        const { touchpoint } = request.query as { touchpoint: string };
-        if (!touchpoint) {
-          return reply.status(400).send({ error: "Missing touchpoint query param" });
-        }
-        const data = await GetFlightsByTouchpoint(touchpoint);
-        reply.send(data);
-      } catch (err) {
-        console.error("Error:", err);
-        reply.status(500).send({ error: "Internal server error" });
-      }
-    });
-      // Route to get data by Aircraft Type http://localhost:3000/api/touchpoint/aircraft?aircraftType=A320N
-  server.get("/api/touchpoint/aircraft", { preValidation: [server.authenticate] }, async (request, reply) => {
-    try {
-      const { aircraftType } = request.query as { aircraftType: string };
-      if (!aircraftType) {
-        return reply.status(400).send({ error: "Missing aircraftType query param" });
-      }
-      const data = await GetFlightsByAircraftType(aircraftType);
-      reply.send(data);
-    } catch (err) {
-      console.error("Error:", err);
-      reply.status(500).send({ error: "Internal server error" });
-    }
-  });
-  // Route to get data by Flight ID http://localhost:3000/api/touchpoint/flightid?flightID=585146
-  server.get("/api/touchpoint/flightid", { preValidation: [server.authenticate] }, async (request, reply) => {
-    try {
-      const { flightID } = request.query as { flightID: string };
-      if (!flightID) {
-        return reply.status(400).send({ error: "Missing flightID query param" });
-      }
-      const data = await GetFlightsByFlightID(flightID);
-      reply.send(data);
-    } catch (err) {
-      console.error("Error:", err);
-      reply.status(500).send({ error: "Internal server error" });
-    }
-  });
+  createQueryRoute<{ aircraftType: string }>(
+    server,
+    "/api/touchpoint/aircraft",
+    "aircraftType",
+    GetFlightsByAircraftType
+  );
+
+  createQueryRoute<{ flightID: string }>(
+    server,
+    "/api/touchpoint/flightid",
+    "flightID",
+    GetFlightsByFlightID
+  );
+
 };
 
 
