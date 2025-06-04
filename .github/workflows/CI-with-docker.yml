@@ -15,6 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: trust certificate
+        run: |
+          sudo cp backend/server.cert /usr/local/share/ca-certificates/server.crt
+          sudo update-ca-certificates
+
+
       - name: Set up Docker Compose
         run: docker compose up -d --build
 
