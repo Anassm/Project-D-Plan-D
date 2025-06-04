@@ -45,7 +45,6 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-
         run: |
           response=$(curl -s -X POST http://localhost:3000/post/login \
           -H "Content-Type: application/json" \
@@ -56,11 +55,6 @@ jobs:
           echo "::add-mask::$token"
           echo "token=$token" >> $GITHUB_OUTPUT
           
-
-
-      - name: Run and test compiled server (backend)
-        working-directory: backend
-        shell: bash
       - name: Run and test compiled server (backend)
         working-directory: backend
         shell: bash
