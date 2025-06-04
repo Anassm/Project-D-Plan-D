@@ -21,27 +21,30 @@ jobs:
       - name: Debug backend health endpoint with verbose curl
         run: |
           echo "Running verbose curl inside backend container..."
+          sleep 60
           docker exec project-d-plan-d-backend-1 curl -k -v https://localhost:3000/health || true
 
       - name: Wait for backend to be ready
         run: |
           echo "Waiting for backend..."
+
           success=false
           for i in {1..10}; do
-            if docker exec -T project-d-plan-d-backend-1 curl -k -s https://localhost:3000/health || true
+            echo "Try #$i"
+            docker exec project-d-plan-d-backend-1 curl -k -v https://localhost:3000/health && {
               echo "✅ Backend is up"
               success=true
               break
-            else
-              echo "⏳ Waiting..."
-              sleep 3
-            fi
+            }
+            echo "⏳ Waiting for backend..."
+            sleep 3
           done
 
           if [ "$success" = false ]; then
             echo "❌ Backend did not start in time"
             exit 1
           fi
+
 
       - name: Login via API and run protected test
         env:
