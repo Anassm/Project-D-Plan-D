@@ -18,6 +18,11 @@ jobs:
       - name: Set up Docker Compose
         run: docker compose up -d --build
 
+      - name: Debug backend health endpoint with verbose curl
+        run: |
+          echo "Running verbose curl inside backend container..."
+          docker exec project-d-plan-d-backend-1 curl -k -v https://localhost:3000/health || true
+
       - name: Wait for backend to be ready
         run: |
           echo "Waiting for backend..."
