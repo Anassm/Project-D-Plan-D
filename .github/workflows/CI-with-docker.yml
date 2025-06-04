@@ -23,7 +23,7 @@ jobs:
           echo "Waiting for backend..."
           success=false
           for i in {1..10}; do
-            if docker exec project-d-plan-d-backend-1 curl -s http://localhost:3000/health > /dev/null; then
+            if docker exec project-d-plan-d-backend-1 curl -k -s https://localhost:3000/health > /dev/null; then
               echo "✅ Backend is up"
               success=true
               break
@@ -44,7 +44,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           echo "Logging in..."
-          response=$(docker exec project-d-plan-d-frontend-1 curl -s -X POST http://localhost:3000/post/login \
+          response=$(docker exec project-d-plan-d-frontend-1 curl -k -s -X POST https://localhost:3000/post/login \
             -H "Content-Type: application/json" \
             -d "{\"username\":\"$USERNAME\", \"password\":\"$PASSWORD\"}")
 
