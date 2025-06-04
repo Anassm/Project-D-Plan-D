@@ -39,7 +39,7 @@ jobs:
         run: npm run build
 
       - name: check health
-        working-directory: Backend
+        working-directory: Backend 
         shell: bash
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
