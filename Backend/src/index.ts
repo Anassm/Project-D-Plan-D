@@ -10,7 +10,7 @@ import swaggerPlugin from "./plugins/swagger";
 import rateLimit from "@fastify/rate-limit";
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-const backendPort: number = Number(process.env.API_PORT);
+const backendPort: number = 3000;
 
 const httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, "server.key")),
