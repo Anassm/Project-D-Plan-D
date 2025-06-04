@@ -7,9 +7,9 @@ dotenv.config();
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-if (!jwtSecretKey) {
-  throw new Error("JWT_SECRET_KEY is not defined in environment variables");
-}
+// if (!jwtSecretKey) {
+//   throw new Error("JWT_SECRET_KEY is not defined in environment variables");
+// }
 
 export default fp(async (fastify, opts) => {
     fastify.register(fastifyJwt, {
