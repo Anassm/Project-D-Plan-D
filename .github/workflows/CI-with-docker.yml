@@ -25,7 +25,7 @@ jobs:
         run: docker compose up -d --build
 
       - name: Test backend inside container
-        run: docker exec <backend-container-name> curl -k https://localhost:3000/health
+        run: docker exec project-d-plan-d-backend-1 curl -k https://localhost:3000/health
 
 
       - name: Wait for backend to be ready
