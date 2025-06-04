@@ -28,6 +28,8 @@ jobs:
           echo "🧪 Docker containers status:"
           docker ps -a
 
+          docker exec -it project-d-plan-d-backend-1 ss -tlnp
+
           echo "🧪 Docker logs (backend):"
           docker logs project-d-plan-d-backend-1 || true
 
@@ -38,7 +40,7 @@ jobs:
           docker exec project-d-plan-d-backend-1 ps aux | grep node
 
           echo "🧪 Try connecting to backend from frontend:"
-          docker exec project-d-plan-d-frontend-1 curl -vk https://backend:3000/health || echo "❌ Failed to reach backend from frontend"
+          docker exec project-d-plan-d-frontend-1 curl -vk https://project-d-plan-d-backend-1:3000/health || echo "❌ Failed to reach backend from frontend"
 
           echo "🧪 List /etc/hosts in frontend (to debug DNS):"
           docker exec project-d-plan-d-frontend-1 cat /etc/hosts
