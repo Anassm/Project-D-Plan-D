@@ -46,14 +46,14 @@ jobs:
           sleep 10
 
           response=$(curl -s -X GET https://localhost:3000/health)
-          if [ "$response" != "OK" ]; then
+          if "$response" != "OK"; then
             echo "Health check failed: $response"
             exit 1
           else
             echo "Health check passed"
           fi
           kill $SERVER_PID
-          
+
           
 
       # - name: Login
