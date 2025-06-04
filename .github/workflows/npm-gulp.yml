@@ -41,7 +41,8 @@ jobs:
       - name: check health
         working-directory: Backend
         run: |
-          Start-Process -FilePath "npm" -ArgumentList "run", "serve" -NoNewWindow
+          npm run serve &
+          $SERVER_PID=$!
           Start-Sleep -Seconds 10
 
           try {
@@ -56,8 +57,7 @@ jobs:
             Write-Host "Health check request failed: $_"
             exit 1
           }
-
-          Get-Process node | Stop-Process -Force
+          kill $SERVER_PID
 
           
 
