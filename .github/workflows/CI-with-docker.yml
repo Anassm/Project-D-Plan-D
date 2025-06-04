@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Waiting for backend..."
           for i in {1..10}; do
-            if docker exec project-d-plan-d-frontend-1 curl https://localhost:3000/health; then
+            if docker exec project-d-plan-d-backend-1 curl https://localhost:3000/health; then
               echo "✅ Backend is up"
               break
             else
