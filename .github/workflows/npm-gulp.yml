@@ -41,6 +41,8 @@ jobs:
       - name: check health
         working-directory: Backend
         shell: bash
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
           npm run serve &
           SERVER_PID=$!
