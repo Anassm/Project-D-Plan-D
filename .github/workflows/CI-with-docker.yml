@@ -28,7 +28,7 @@ jobs:
           echo "🧪 Docker containers status:"
           docker ps -a
 
-          docker exec -it project-d-plan-d-backend-1 ss -tlnp
+          docker exec project-d-plan-d-backend-1 ss -tlnp
 
           echo "🧪 Docker logs (backend):"
           docker logs project-d-plan-d-backend-1 || true
