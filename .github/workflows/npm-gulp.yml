@@ -38,27 +38,49 @@ jobs:
         working-directory: backend
         run: npm run build
 
+      - name: Login
+        working-directory: backend
+        shell: bash
+        id: login
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+
+        run: |
+          response=$(curl -s -X POST http://localhost:3000/post/login \
+          -H "Content-Type: application/json" \
+          -d "{\"username\":\"$USERNAME\", \"password\":\"$PASSWORD\"}")
+    
+          token=$(echo "$response" | jq -r '.token')
+
+          echo "::add-mask::$token"
+          echo "token=$token" >> $GITHUB_OUTPUT
+          
+
+
       - name: Run and test compiled server (backend)
         working-directory: backend
         shell: bash
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          API_PORT: ${{ secrets.API_PORT }}
-          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+      - name: Run and test compiled server (backend)
+        working-directory: backend
+        shell: bash
         run: |
+          echo "Starting backend server"
           npm run serve &
-
           SERVER_PID=$!
           sleep 5
 
-          HTTP_STATUS=$(curl -k -s -o /dev/null -w '%{http_code}' https://localhost:${{ secrets.API_PORT }}/health)
+          echo "Checking /health endpoint with JWT auth..."
+          HTTP_STATUS=$(curl -k -s -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer ${{ steps.login.outputs.token }}" \
+            https://localhost:${{ secrets.API_PORT }}/health)
 
           kill $SERVER_PID
 
           if [ "$HTTP_STATUS" = "200" ]; then
-            echo "✅ Health endpoint responded with 200"
+            echo "✅ Authenticated health check succeeded with 200"
             exit 0
           else
-            echo "❌ Health endpoint did not respond with 200, got $HTTP_STATUS"
+            echo "❌ Authenticated health check failed, got $HTTP_STATUS"
             exit 1
           fi
