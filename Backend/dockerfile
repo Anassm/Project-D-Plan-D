@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
+RUN apt-get update && apt-get install -y net-tools iproute2
+
 
 COPY . .
 
