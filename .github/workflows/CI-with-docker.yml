@@ -24,6 +24,10 @@ jobs:
       - name: Set up Docker Compose
         run: docker compose up -d --build
 
+      - name: Test backend inside container
+        run: docker exec <backend-container-name> curl -k https://localhost:3000/health
+
+
       - name: Wait for backend to be ready
         run: |
           echo "Waiting for backend..."
