@@ -41,18 +41,23 @@ jobs:
       - name: check health
         working-directory: Backend
         run: |
-          npm run serve &
-          SERVER_PID=$!
-          sleep 10
+          Start-Process -FilePath "npm" -ArgumentList "run", "serve" -NoNewWindow
+          Start-Sleep -Seconds 10
 
-          response=$(curl -s -X GET https://localhost:3000/health)
-          if "$response" != "OK"; then
-            echo "Health check failed: $response"
+          try {
+            $response = Invoke-RestMethod -Uri "http://localhost:3000/health" -UseBasicParsing
+            if ($response -ne "OK") {
+              Write-Host "Health check failed: $response"
+              exit 1
+            } else {
+              Write-Host "Health check passed"
+            }
+          } catch {
+            Write-Host "Health check request failed: $_"
             exit 1
-          else
-            echo "Health check passed"
-          fi
-          kill $SERVER_PID
+          }
+
+          Get-Process node | Stop-Process -Force
 
           
 
