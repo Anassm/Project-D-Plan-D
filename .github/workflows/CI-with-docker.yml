@@ -17,7 +17,7 @@ jobs:
 
       - name: trust certificate
         run: |
-          sudo cp backend/src/server.cert /usr/local/share/ca-certificates/server.crt
+          sudo cp Backend/src/server.cert /usr/local/share/ca-certificates/server.crt
           sudo update-ca-certificates
 
 
