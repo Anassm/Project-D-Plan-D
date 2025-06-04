@@ -21,18 +21,7 @@ jobs:
           sudo update-ca-certificates
 
       - name: Set up Docker Compose
-        run: |
-          docker compose up -d --build
-          echo "Waiting for backend..."
-          for i in {1..10}; do
-            if docker exec project-d-plan-d-backend-1 curl https://127.0.0.1:3000/health; then
-              echo "✅ Backend is up"
-              break
-            else
-              echo "⏳ Waiting..."
-              sleep 3
-            fi
-          done
+        run: docker compose up -d --build
 
       - name: Debug container environment
         if: failure()
