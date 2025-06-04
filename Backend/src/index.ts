@@ -9,7 +9,7 @@ import path from "path";
 import swaggerPlugin from "./plugins/swagger";
 import rateLimit from "@fastify/rate-limit";
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const backendPort: number = Number(process.env.API_PORT);
 
 const httpsOptions = {
