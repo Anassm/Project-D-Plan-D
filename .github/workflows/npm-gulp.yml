@@ -34,17 +34,13 @@ jobs:
         working-directory: Frontend
         run: npm install
 
-      - name: Build typescript code (backend)
-        working-directory: Backend
-        run: npm run build
-
       - name: check health
         working-directory: Backend 
         shell: bash
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-          npm run serve &
+          npm run dev
           SERVER_PID=$!
           sleep 10
 
