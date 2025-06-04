@@ -34,6 +34,27 @@ jobs:
             fi
           done
 
+      - name: Debug container environment
+        if: failure()
+        run: |
+          echo "🧪 Docker containers status:"
+          docker ps -a
+
+          echo "🧪 Docker logs (backend):"
+          docker logs project-d-plan-d-backend-1 || true
+
+          echo "🧪 Check if port 3000 is listening in backend container:"
+          docker exec project-d-plan-d-backend-1 sh -c "netstat -tulpn | grep 3000 || ss -tulpn | grep 3000 || echo 'No port 3000 found'"
+
+          echo "🧪 Check if Node.js process is running:"
+          docker exec project-d-plan-d-backend-1 ps aux | grep node
+
+          echo "🧪 Try connecting to backend from frontend:"
+          docker exec project-d-plan-d-frontend-1 curl -vk https://backend:3000/health || echo "❌ Failed to reach backend from frontend"
+
+          echo "🧪 List /etc/hosts in frontend (to debug DNS):"
+          docker exec project-d-plan-d-frontend-1 cat /etc/hosts
+
       - name: Wait for backend to be ready
         run: |
           echo "Waiting for backend..."
