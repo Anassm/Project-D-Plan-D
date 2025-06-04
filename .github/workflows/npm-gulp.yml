@@ -51,7 +51,7 @@ jobs:
           response=$(curl -ks http://localhost:3000/health)
           if [ "$response" != "OK" ]; then
             echo "Health check failed: $response"
-            kill $SERVER_PID
+            kill $SERVER_PID 
             exit 1
           else
             echo "Health check passed"
