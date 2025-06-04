@@ -23,41 +23,34 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Set variables
-        working-directory: backend
-        shell: bash
-        run: |
-          touch .env
-          echo JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" >> .env
-          echo API_PORT="${{ secrets.API_PORT }}" >> .env
-          echo DATABASE_PORT="${{ secrets.DATABASE_PORT }}" >> .env
+      - name: Install dependencies (root)
+        run: npm install
 
-      - name: Install dependencies
-        run: |
-          npm install
-          cd backend
-          npm install
-          cd ../frontend
-          npm install
+      - name: Install dependencies (backend)
+        working-directory: backend
+        run: npm install
+
+      - name: Install dependencies (frontend)
+        working-directory: frontend
+        run: npm install
 
       - name: Build typescript code (backend)
         working-directory: backend
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Run and test compiled server (backend)
         working-directory: backend
-        shell: bash
         env:
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           API_PORT: ${{ secrets.API_PORT }}
           DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
         run: |
           npm run serve &
+
           SERVER_PID=$!
           sleep 5
 
-          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' https://localhost:${{ secrets.API_PORT }}/health)
+          HTTP_STATUS=$(curl -k -s -o /dev/null -w '%{http_code}' https://localhost:${{ secrets.API_PORT }}/health)
 
           kill $SERVER_PID
 
