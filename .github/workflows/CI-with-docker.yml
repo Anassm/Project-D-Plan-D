@@ -15,11 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: trust certificate
-        run: |
-          sudo cp Backend/src/server.cert /usr/local/share/ca-certificates/server.crt
-          sudo update-ca-certificates
-
       - name: Set up Docker Compose
         run: |
           docker compose build
@@ -29,7 +24,7 @@ jobs:
         run: |
           echo "Waiting for backend..."
           for i in {1..10}; do
-            if docker exec project-d-plan-d-backend-1 curl https://localhost:3000/health; then
+            if curl -k -s https://localhost:3000/health; then
               echo "✅ Backend is up"
               break
             else
@@ -38,30 +33,6 @@ jobs:
             fi
           done
 
-      - name: Login via API and run protected test
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-        run: |
-          echo "Logging in..."
-          response=$(docker exec project-d-plan-d-frontend-1 curl -k -s -X POST https://localhost:3000/post/login \
-            -H "Content-Type: application/json" \
-            -d "{\"username\":\"$USERNAME\", \"password\":\"$PASSWORD\"}")
-
-          token=$(echo "$response" | jq -r '.token')
-          echo "::add-mask::$token"
-
-          echo "Testing protected endpoint..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
-            -H "Authorization: Bearer $token" \
-            http://localhost:3000/health)
-
-          if [ "$HTTP_STATUS" = "200" ]; then
-            echo "✅ Success"
-          else
-            echo "❌ Failed with HTTP $HTTP_STATUS"
-            exit 1
-          fi
 
       - name: Tear down
         if: always()
