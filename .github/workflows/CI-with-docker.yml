@@ -23,7 +23,7 @@ jobs:
       - name: Set up Docker Compose
         run: |
           docker compose build
-          docker compose up
+          docker compose up -d
 
       - name: Wait for backend to be ready
         run: |
