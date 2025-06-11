@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Compose
+      - name: build containers
         run: |
           docker compose build
           docker compose up -d
@@ -33,7 +33,19 @@ jobs:
             fi
           done
 
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend..."
+          for i in {1..10}; do
+            if curl -k -s http://localhost:5173; then
+              echo "✅ Frontend is up"
+              break
+            else
+              echo "⏳ Waiting..."
+              sleep 3
+            fi
+          done
 
-      - name: Tear down
+      - name: Tear down containers
         if: always()
         run: docker compose down
