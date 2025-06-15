@@ -21,31 +21,31 @@ export const server = Fastify({
   https: httpsOptions,
 });
 
-server.register(cors, {
-  origin: "http://localhost:5173",
-  credentials: true,
-});
-
 const startServer = async () => {
+  await server.register(cors, {
+    origin: "http://localhost:5173",
+    credentials: true,
+  });
+
   await server.register(rateLimit, {
     max: 300000,
     timeWindow: "1 minute",
-    // allowList: ["127.0.0.1"],
     ban: 10000,
   });
 
-  server.register(swaggerPlugin);
-  server.register(authentication);
-  server.register(showRoutes);
-  server.register(flightsRoutes);
+  await server.register(swaggerPlugin); // Register before routes
+  await server.register(authentication);
+  await server.register(showRoutes);
+  await server.register(flightsRoutes);
 
   try {
     await server.listen({ port: backendPort, host: "0.0.0.0" });
-    console.log(`Server listening on port ${backendPort}`);
+    await server.ready();
+    console.log(`✅ Server listening on https://localhost:${backendPort}`);
   } catch (err) {
-    console.error(err);
-    process.exit(1);
+    console.error("❌ Server failed to start:", err);
+    throw err;
   }
 };
 
-startServer(); // <--- roept de async functie aan
+startServer(); // Start async server
