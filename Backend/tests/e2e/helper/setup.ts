@@ -1,4 +1,4 @@
-import { buildApp } from "../../src/server";
+import { buildApp } from "../../../src/server";
 import { beforeAll, afterAll } from "@jest/globals";
 
 let app: Awaited<ReturnType<typeof buildApp>>;
