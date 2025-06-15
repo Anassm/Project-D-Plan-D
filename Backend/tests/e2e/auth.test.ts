@@ -1,3 +1,4 @@
+jest.unmock("pg");
 import { describe, it, expect } from "@jest/globals";
 import request from "supertest";
 import { app } from "./helper/setup";

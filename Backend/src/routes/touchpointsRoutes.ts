@@ -1,3 +1,4 @@
+jest.unmock("pg");
 import bcrypt from "bcrypt";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import {
