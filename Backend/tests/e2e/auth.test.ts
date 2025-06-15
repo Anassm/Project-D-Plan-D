@@ -1,10 +1,6 @@
-import {
-  describe,
-  it,
-  expect,
-} from "@jest/globals";
-import { app } from "./setup.test";
+import { describe, it, expect } from "@jest/globals";
 import request from "supertest";
+import { app } from "./setup";
 
 describe("Auth E2E", () => {
   it("Login and return token", async () => {
