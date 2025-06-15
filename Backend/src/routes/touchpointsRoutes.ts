@@ -509,7 +509,7 @@ export default async function touchpointRoutes(
               properties: flightSchema,
             },
           },
-          400: {
+          403: {
             type: "object",
             properties: {
               error: { type: "string" },
