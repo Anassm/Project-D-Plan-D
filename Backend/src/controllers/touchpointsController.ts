@@ -1,8 +1,26 @@
 import { Pool } from "pg";
+
 import dotenv from "dotenv";
 
-dotenv.config();
+export interface Flight {
+  flightid: number;
+  timetableid: number;
+  flightnumber: string;
+  traffictype: string;
+  scheduledlocal: string;
+  airlineshortname: string;
+  aircrafttype: string;
+  airport: string;
+  country: string;
+  paxforecast: number;
+  touchpoint: string;
+  touchpointtime: string;
+  touchpointpax: number;
+  actuallocal: string;
+  paxactual: number | null;
+}
 
+dotenv.config();
 const pool = new Pool({
   user: process.env.DATABASE_USER,
   host: process.env.DATABASE_URL,
@@ -18,7 +36,7 @@ export async function GetAllFlightsInWindow(
   datum: string, // verwacht nu "2024-09-29"
   vanTijd: string, // verwacht nu "14:00"
   totTijd: string // verwacht nu "15:00"
-): Promise<JSON> {
+): Promise<Flight[]> {
   try {
     //database connection setup
     const db = await pool.connect();
@@ -42,7 +60,7 @@ export async function GetAllFlightsInWindow(
       [van.toISOString(), tot.toISOString()]
     );
 
-    return res.rows as unknown as JSON;
+    return res.rows;
   } catch (err) {
     throw err;
   }
@@ -50,14 +68,14 @@ export async function GetAllFlightsInWindow(
 
 export async function GetFlightsByFlightNumber(
   flightNumber: string
-): Promise<JSON> {
+): Promise<Flight[]> {
   try {
     const db = await pool.connect();
     const res = await db.query(
       `SELECT * FROM touchpoint WHERE FlightNumber = $1`,
       [flightNumber]
     );
-    return Promise.resolve(res.rows as unknown as JSON);
+    return Promise.resolve(res.rows);
   } catch (err) {
     throw err;
   }
@@ -65,14 +83,14 @@ export async function GetFlightsByFlightNumber(
 
 export async function GetFlightsByAirline(
   airlineShortname: string
-): Promise<JSON> {
+): Promise<Flight[]> {
   try {
     const db = await pool.connect();
     const res = await db.query(
       `SELECT * FROM touchpoint WHERE AirlineShortname = $1`,
       [airlineShortname]
     );
-    return Promise.resolve(res.rows as unknown as JSON);
+    return Promise.resolve(res.rows);
   } catch (err) {
     throw err;
   }
@@ -80,14 +98,14 @@ export async function GetFlightsByAirline(
 
 export async function GetFlightsByTouchpoint(
   touchpoint: string
-): Promise<JSON> {
+): Promise<Flight[]> {
   try {
     const db = await pool.connect();
     const res = await db.query(
       `SELECT * FROM touchpoint WHERE Touchpoint = $1`,
       [touchpoint]
     );
-    return Promise.resolve(res.rows as unknown as JSON);
+    return Promise.resolve(res.rows);
   } catch (err) {
     throw err;
   }
@@ -95,26 +113,26 @@ export async function GetFlightsByTouchpoint(
 
 export async function GetFlightsByAircraftType(
   aircraftType: string
-): Promise<JSON> {
+): Promise<Flight[]> {
   try {
     const db = await pool.connect();
     const res = await db.query(
       `SELECT * FROM touchpoint WHERE AircraftType = $1`,
       [aircraftType]
     );
-    return Promise.resolve(res.rows as unknown as JSON);
+    return Promise.resolve(res.rows);
   } catch (err) {
     throw err;
   }
 }
 
-export async function GetFlightsByFlightID(flightID: string): Promise<JSON> {
+export async function GetFlightsByFlightID(flightID: string): Promise<Flight[]> {
   try {
     const db = await pool.connect();
     const res = await db.query(`SELECT * FROM touchpoint WHERE FlightID = $1`, [
       flightID,
     ]);
-    return Promise.resolve(res.rows as unknown as JSON);
+    return Promise.resolve(res.rows);
   } catch (err) {
     throw err;
   }

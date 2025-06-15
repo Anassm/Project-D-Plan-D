@@ -13,12 +13,12 @@ dotenv.config();
 const backendPort: number = Number(process.env.API_PORT);
 
 const httpsOptions = {
-  key: fs.readFileSync(path.join(__dirname, "server.key")),
-  cert: fs.readFileSync(path.join(__dirname, "server.cert")),
+  key: fs.readFileSync(("../certs/localhost-key.pem")),
+  cert: fs.readFileSync(("../certs/localhost-cert.pem")),
 };
 
 export const server = Fastify({
-  https: httpsOptions,
+  https: httpsOptions, 
 });
 
 const startServer = async () => {

@@ -30,7 +30,7 @@ export default function Login({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+      
       const result = await res.json();
 
       if (res.ok && result.token) {
