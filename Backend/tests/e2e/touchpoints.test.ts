@@ -1,11 +1,11 @@
 import { describe, it, expect } from "@jest/globals";
 import request from "supertest";
 import { app } from "./helper/setup";
-import { getAuthToken } from "./helper/authHelper";
+import { getAuthTokenAdmin } from "./helper/authHelper";
 
 describe("Testing Touchpoint endpoints", () => {
   it("`/api/touchpoint/window`", async () => {
-    const token = await getAuthToken();
+    const token = await getAuthTokenAdmin();
 
     const res = await request(app.server)
       .get("/api/touchpoint/window")
@@ -16,7 +16,7 @@ describe("Testing Touchpoint endpoints", () => {
   });
 
   it("`/api/touchpoint/flightnumber`", async () => {
-    const token = await getAuthToken();
+    const token = await getAuthTokenAdmin();
 
     const res = await request(app.server)
       .get("/api/touchpoint/flightnumber")
@@ -27,7 +27,7 @@ describe("Testing Touchpoint endpoints", () => {
   });
 
   it("`/api/touchpoint/airline`", async () => {
-    const token = await getAuthToken();
+    const token = await getAuthTokenAdmin();
 
     const res = await request(app.server)
       .get("/api/touchpoint/airline")
@@ -38,7 +38,7 @@ describe("Testing Touchpoint endpoints", () => {
   });
 
   it("`/api/touchpoint/touchpoint`", async () => {
-    const token = await getAuthToken();
+    const token = await getAuthTokenAdmin();
 
     const res = await request(app.server)
       .get("/api/touchpoint/touchpoint")
@@ -49,7 +49,7 @@ describe("Testing Touchpoint endpoints", () => {
   });
 
   it("`/api/touchpoint/aircraft`", async () => {
-    const token = await getAuthToken();
+    const token = await getAuthTokenAdmin();
 
     const res = await request(app.server)
       .get("/api/touchpoint/aircraft")
@@ -60,7 +60,7 @@ describe("Testing Touchpoint endpoints", () => {
   });
 
   it("`/api/touchpoint/flightid`", async () => {
-    const token = await getAuthToken();
+    const token = await getAuthTokenAdmin();
 
     const res = await request(app.server)
       .get("/api/touchpoint/flightid")
