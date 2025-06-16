@@ -4,7 +4,7 @@ import request from "supertest";
 import { app } from "./helper/setup";
 import { getAuthTokenAdmin } from "./helper/authHelper";
 
-describe("Testing Touchpoint endpoints", () => {
+describe("Testing all Touchpoint endpoints regularly on 200", () => {
   it("`/api/touchpoint/window`", async () => {
     const token = await getAuthTokenAdmin();
 
@@ -70,4 +70,27 @@ describe("Testing Touchpoint endpoints", () => {
 
     expect(res.status).toBe(200);
   });
+});
+
+describe("Specific tests following test plan", () => {
+  it("test false input on 400 error code", async () => {
+    const token = await getAuthTokenAdmin();
+
+    const res = await request(app.server)
+      .get("/api/touchpoint/flightid")
+      .set("Authorization", `Bearer ${token}`)
+      .query({ flightID: "999999999999" });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("Call a non-existing endpoint", async () => {
+    const token = await getAuthTokenAdmin();
+
+    const res = await request(app.server).get("/api/verycoolendpoint");
+
+    expect(res.status).toBe(404);
+  });
+
+  
 });
