@@ -53,6 +53,11 @@ jobs:
           npm run test
           cd ..
 
+      - name: Debug backend logs
+        if: failure()
+        run: docker compose logs backend
+
+
       - name: Tear down containers
         if: always()
         run: docker compose down
