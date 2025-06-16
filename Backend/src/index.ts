@@ -1,51 +1,27 @@
-import Fastify from "fastify";
-import cors from "@fastify/cors";
-import showRoutes from "./routes/touchpointsRoutes";
-import { flightsRoutes } from "./routes/flightsRoutes";
-import dotenv from "dotenv";
-import authentication from "./plugins/authentication";
 import fs from "fs";
 import path from "path";
-import swaggerPlugin from "./plugins/swagger";
-import rateLimit from "@fastify/rate-limit";
+import dotenv from "dotenv";
+import { buildApp } from "./server";
 
 dotenv.config();
-const backendPort: number = Number(process.env.API_PORT);
 
 const httpsOptions = {
-  key: fs.readFileSync(path.join(__dirname, "server.key")),
-  cert: fs.readFileSync(path.join(__dirname, "server.cert")),
+  key: fs.readFileSync(("../certs/localhost-key.pem")),
+  cert: fs.readFileSync(("../certs/localhost-cert.pem")),
 };
 
-export const server = Fastify({
-  https: httpsOptions,
-});
+const backendPort = Number(process.env.API_PORT);
 
-server.register(cors, {
-  origin: "http://localhost:5173",
-  credentials: true,
-});
-
-const startServer = async () => {
-  await server.register(rateLimit, {
-    max: 300000,
-    timeWindow: "1 minute",
-    // allowList: ["127.0.0.1"],
-    ban: 10000,
-  });
-
-  server.register(swaggerPlugin);
-  server.register(authentication);
-  server.register(showRoutes);
-  server.register(flightsRoutes);
+const start = async () => {
+  const app = await buildApp({ https: httpsOptions });
 
   try {
-    await server.listen({ port: backendPort, host: "0.0.0.0" });
-    console.log(`Server listening on port ${backendPort}`);
+    await app.listen({ port: backendPort, host: "0.0.0.0" });
+    console.log(`✅ Server listening on https://localhost:${backendPort}`);
   } catch (err) {
-    console.error(err);
+    console.error("❌ Server failed to start:", err);
     process.exit(1);
   }
 };
 
-startServer(); // <--- roept de async functie aan
+start();

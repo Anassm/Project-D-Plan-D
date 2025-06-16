@@ -1,9 +1,11 @@
 import fp from "fastify-plugin";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import { GetFlightsByFlightNumber } from "../controllers/touchpointsController";
+import { FastifyPluginAsync } from "fastify";
 
-export default fp(async (fastify) => {
+const swaggerPlugin: FastifyPluginAsync = fp(async (fastify) => {
+  if (process.env.NODE_ENV === "test") return;
+
   await fastify.register(swagger, {
     openapi: {
       info: {
@@ -27,7 +29,12 @@ export default fp(async (fastify) => {
   await fastify.register(swaggerUi, {
     routePrefix: "/docs",
     uiConfig: {
-      // docExpansion: 'full'
+      docExpansion: "list",
     },
   });
+
+  // Optional: log the Swagger URL
+  fastify.log.info("Swagger docs available at /docs");
 });
+
+export default swaggerPlugin;
