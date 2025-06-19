@@ -137,3 +137,86 @@ export async function GetFlightsByFlightID(flightID: string): Promise<Flight[]> 
     throw err;
   }
 }
+
+// add touchpoints
+export async function AddFlight(data: any): Promise<any> {
+  try {
+    const db = await pool.connect();
+
+    // Define SQL INSERT query with parameterized values
+    const query = `
+      INSERT INTO touchpoint (
+        flightid, timetableid, flightnumber, traffictype, scheduledlocal, airlineshortname,
+        aircrafttype, airport, country, paxforecast, touchpoint, touchpointtime,
+        touchpointpax, actuallocal, paxactual
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6,
+        $7, $8, $9, $10, $11, $12,
+        $13, $14, $15
+      ) RETURNING *;
+    `;
+
+    // incoming data
+    const values = [
+      data.flightid, data.timetableid, data.flightnumber, data.traffictype, data.scheduledlocal, data.airlineshortname,
+      data.aircrafttype, data.airport, data.country, data.paxforecast, data.touchpoint, data.touchpointtime,
+      data.touchpointpax, data.actuallocal, data.paxactual
+    ];
+    const result = await db.query(query, values);
+    db.release();
+    return result.rows[0];
+  } catch (err) {
+    throw err;
+  }
+}
+
+
+
+// delete a touchPoint by id
+export async function DeleteFlightByID(flightID: string): Promise<any> {
+  try {
+    const db = await pool.connect();
+    const result = await db.query(
+      `DELETE FROM touchpoint WHERE FlightID = $1 RETURNING *`,
+      [flightID]
+    );
+    db.release();
+    // return the deleted row or null
+    return result.rows[0] || null;
+  } catch (err) {
+    throw err;
+  }
+}
+
+
+// update/put
+export async function UpdateFlightByID(flightID: string, data: Partial<any>): Promise<any> {
+  try {
+    const db = await pool.connect();
+
+    // get keys of fields to update
+    const keys = Object.keys(data);
+    if (keys.length === 0) {
+      throw new Error("No fields provided to update.");
+    }
+
+    // Build an array of "field = $index" expressions for SQL SET clause
+    const setClauses = keys.map((key, idx) => `${key} = $${idx + 2}`);
+    // Create values array: [flightID, ...updated values]
+    const values = [flightID, ...keys.map(key => data[key])];
+
+    const query = `
+      UPDATE touchpoint
+      SET ${setClauses.join(', ')}
+      WHERE FlightID = $1
+      RETURNING *;
+    `;
+
+    const result = await db.query(query, values);
+    db.release();
+
+    return result.rows[0] || null; // Return updated row or null if not found
+  } catch (err) {
+    throw err;
+  }
+}

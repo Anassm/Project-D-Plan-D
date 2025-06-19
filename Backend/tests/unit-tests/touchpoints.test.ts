@@ -12,6 +12,9 @@ import {
     GetFlightsByTouchpoint,
     GetFlightsByAircraftType,
     GetFlightsByFlightID,
+    AddFlight,
+    DeleteFlightByID,
+    UpdateFlightByID,
 } from "../../src/controllers/touchpointsController";
 // @ts-ignore
 import { mockQuery } from "../../__mocks__/pg.ts"; // Import mockQuery directly from your mock file
@@ -207,5 +210,72 @@ describe("touch point data tests", () => {
             ["638004"]
         );
         expect(result[0]).toEqual(mockFlight);
+    });
+    
+    test("AddFlight should insert a flight and return it", async () => {
+        const inputData = {
+            flightid: "F123",
+            timetableid: "T1",
+            flightnumber: "AB123",
+            traffictype: "A",
+            scheduledlocal: "2025-01-01T10:00:00.000Z",
+            airlineshortname: "AIRLINE",
+            aircrafttype: "A320",
+            airport: "JFK",
+            country: "USA",
+            paxforecast: 180,
+            touchpoint: "Gate A",
+            touchpointtime: "2025-01-01T10:10:00.000Z",
+            touchpointpax: 150,
+            actuallocal: "2025-01-01T10:05:00.000Z",
+            paxactual: 170,
+        };
+
+        mockQuery.mockResolvedValue({ rows: [inputData] });
+
+        const result = await AddFlight(inputData);
+
+        expect(mockQuery).toHaveBeenCalled();
+        expect(result).toEqual(inputData);
+    });
+
+    test("DeleteFlightByID should delete a flight and return it", async () => {
+        const mockFlight = { flightid: "F123" };
+        mockQuery.mockResolvedValue({ rows: [mockFlight] });
+
+        const result = await DeleteFlightByID("F123");
+
+        expect(mockQuery).toHaveBeenCalledWith(
+            `DELETE FROM touchpoint WHERE FlightID = $1 RETURNING *`,
+            ["F123"]
+        );
+        expect(result).toEqual(mockFlight);
+    });
+
+    test("DeleteFlightByID should return null if no flight is found", async () => {
+        mockQuery.mockResolvedValue({ rows: [] });
+
+        const result = await DeleteFlightByID("NOPE");
+
+        expect(result).toBeNull();
+    });
+
+    test("UpdateFlightByID should update flight and return updated record", async () => {
+        const updates = { paxforecast: 200, paxactual: 195 };
+        const updatedRow = { flightid: "F123", ...updates };
+
+        mockQuery.mockResolvedValue({ rows: [updatedRow] });
+
+        const result = await UpdateFlightByID("F123", updates);
+
+        expect(mockQuery).toHaveBeenCalledWith(
+            expect.stringContaining("UPDATE touchpoint"),
+            expect.arrayContaining(["F123", 200, 195])
+        );
+        expect(result).toEqual(updatedRow);
+    });
+
+    test("UpdateFlightByID should throw error if no update fields given", async () => {
+        await expect(UpdateFlightByID("F123", {})).rejects.toThrow("No fields provided to update.");
     });
 });
