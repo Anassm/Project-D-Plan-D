@@ -33,28 +33,24 @@ const pool = new Pool({
 });
 
 export async function GetAllFlightsInWindow(
-  datum: string, // verwacht nu "2024-09-29"
-  vanTijd: string, // verwacht nu "14:00"
-  totTijd: string // verwacht nu "15:00"
+  datum: string, // verwacht nu bv 2024-09-29
+  vanTijd: string, // verwacht nu bv 14:00
+  totTijd: string // verwacht nu bv 15:00
 ): Promise<Flight[]> {
   try {
-    //database connection setup
     const db = await pool.connect();
 
-    // Voeg de tijd toe aan de datum in het juiste formaat
-    const vanDateStr = `${datum}T${vanTijd}`;
-    const totDateStr = `${datum}T${totTijd}`;
-
     // Maak de datums
-    const van = new Date(vanDateStr);
-    const tot = new Date(totDateStr);
+    let van = new Date(`${datum}T${vanTijd}`);
+    let tot = new Date(`${datum}T${totTijd}`);
 
-    // Controleer of de datums valide zijn
+    van.setHours(van.getHours() + 2);
+    tot.setHours(tot.getHours() + 2);
+
     if (isNaN(van.getTime()) || isNaN(tot.getTime())) {
       console.log("Invalid van or tot date:", van, tot);
     }
 
-    // Voer de database query uit
     const res = await db.query(
       `SELECT * FROM touchpoint WHERE ScheduledLocal BETWEEN $1 AND $2`,
       [van.toISOString(), tot.toISOString()]
