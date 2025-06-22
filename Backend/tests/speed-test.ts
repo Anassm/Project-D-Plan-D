@@ -3,7 +3,7 @@ import axios from 'axios';
 import https from "https";
 
 
-const BASE_URL = 'https://localhost:3000'; // Pas aan
+const BASE_URL = 'https://localhost:3000';
 const endpoints = [
   "/api/touchpoint/window?date=2024-01-01&from=14:00&to=15:00",
   "/api/touchpoint/flightnumber?flightNumber=PGT1261",
@@ -76,7 +76,7 @@ async function runSpeedTest() {
     }
   }
 
-  const threshold = 1000; // 1 seconde
+  const threshold = 1000; 
   const fastResponses = responseTimes.filter(t => t < threshold).length;
   const percentageFast = (fastResponses / responseTimes.length) * 100;
 
@@ -86,7 +86,7 @@ async function runSpeedTest() {
     console.log("🎉 Test geslaagd!");
   } else {
     console.log("❌ Test niet geslaagd.");
-    process.exit(1); // exit met error code
+    process.exit(1); 
   }
 }
 
