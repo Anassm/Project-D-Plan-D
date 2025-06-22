@@ -1,67 +1,51 @@
-name: NodeJS with Gulp
+name: CI with Docker Compose
 
 on:
   push:
+    branches: ["development", "pipeline3"]
   pull_request:
+    branches: ["development", "pipeline3"]
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
+  integration:
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Set variables
-        working-directory: backend
-        shell: bash
+      - name: build containers
         run: |
-          touch .env
-          echo JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" >> .env
-          echo API_PORT="${{ secrets.API_PORT }}" >> .env
-          echo DATABASE_PORT="${{ secrets.DATABASE_PORT }}" >> .env
+          docker compose build
+          docker compose up -d
 
-      - name: Install dependencies
+      - name: Wait for backend to be ready
         run: |
-          npm install
-          cd backend
-          npm install
-          cd ../frontend
-          npm install
+          echo "Waiting for backend..."
+          for i in {1..10}; do
+            if curl -k -s https://localhost:3000/health; then
+              echo " Backend is up"
+              break
+            else
+              echo "⏳ Waiting..."
+              sleep 3
+            fi
+          done
 
-      - name: Build typescript code (backend)
-        working-directory: backend
+      - name: Wait for frontend to be ready
         run: |
-          npm run build
+          echo "Waiting for frontend..."
+          for i in {1..10}; do
+            if curl -k -s http://localhost:5173; then
+              echo " Frontend is up"
+              break
+            else
+              echo "⏳ Waiting..."
+              sleep 3
+            fi
+          done
 
-      - name: Run and test compiled server (backend)
-        working-directory: backend
-        shell: bash
-        env:
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          API_PORT: ${{ secrets.API_PORT }}
-          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
-        run: |
-          npm run serve &
-          SERVER_PID=$!
-          sleep 5
-
-          HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' https://localhost:${{ secrets.API_PORT }}/health)
-
-          kill $SERVER_PID
-
-          if [ "$HTTP_STATUS" = "200" ]; then
-            echo "✅ Health endpoint responded with 200"
-            exit 0
-          else
-            echo "❌ Health endpoint did not respond with 200, got $HTTP_STATUS"
-            exit 1
-          fi
+      - name: Tear down containers
+        if: always()
+        run: docker compose down
