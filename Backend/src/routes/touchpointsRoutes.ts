@@ -22,6 +22,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false, // safe for dev, use certs in prod
   },
+  max: 30
 });
 
 const flightSchema = {
