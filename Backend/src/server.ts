@@ -16,7 +16,7 @@ export const buildApp = async (options = {}): Promise<FastifyInstance> => {
   });
 
   await server.register(rateLimit, {
-    max: 300000,
+    max: 3000,
     timeWindow: "1 minute",
     ban: 10000,
   });

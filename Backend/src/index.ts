@@ -5,9 +5,11 @@ import { buildApp } from "./server";
 
 dotenv.config();
 
+const certsPath = path.resolve(process.cwd(), "certs");
+
 const httpsOptions = {
-  key: fs.readFileSync(("../certs/localhost-key.pem")),
-  cert: fs.readFileSync(("../certs/localhost-cert.pem")),
+  key: fs.readFileSync(path.join(certsPath, "localhost-key.pem")),
+  cert: fs.readFileSync(path.join(certsPath, "localhost-cert.pem")),
 };
 
 const backendPort = Number(process.env.API_PORT);
