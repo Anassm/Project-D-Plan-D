@@ -12,34 +12,31 @@ const pool = new Pool({
   database: process.env.DATABASE_NAME,
   password: process.env.DATABASE_PASSWORD,
   port: Number(process.env.DATABASE_PORT),
+  max: 30
 });
 
 async function getFirstLine(filePath: string): Promise<string> {
-  const fileStream = fs.createReadStream(filePath); // Efficient file reading
+  const fileStream = fs.createReadStream(filePath); 
   const rl = readline.createInterface({ input: fileStream });
 
   for await (const line of rl) {
-    // Clean the line by removing any special characters and replacing spaces
     const cleanedLine = line
-      .trim() // Remove leading and trailing whitespace
-      .replace(/[^\w,]/g, "") // Remove any special characters (except commas)
-      .replace(/\s+/g, "_"); // Replace spaces with underscores
+      .trim() 
+      .replace(/[^\w,]/g, "") 
+      .replace(/\s+/g, "_"); 
 
-    return cleanedLine; // Reads the first line and stops
+    return cleanedLine; 
   }
 
-  return ""; // In case the file is empty
+  return ""; 
 }
 
 const getModelNames = async (): Promise<string[]> => {
-  // Read the schema.prisma file
   const schemaPath = path.join(__dirname, "../../prisma/schema.prisma");
   const schema = fs.readFileSync(schemaPath, "utf8");
 
-  // Get the Prisma Data Model Meta Format (DMMF)
   const dmmf = await getDMMF({ datamodel: schema });
 
-  // Extract model names
   return dmmf.datamodel.models.map((model) => model.name);
 };
 
@@ -58,18 +55,18 @@ async function main() {
         console.log(`no such file: ${filepath}`);
         continue;
       } else {
-        const firstLine = await getFirstLine(filepath); // Read the first line
+        const firstLine = await getFirstLine(filepath); 
 
         // const firstLine: string = await getFirstLine(filepath);
         console.log(firstLine);
         const fillQuery: string = `COPY ${element} (${firstLine}) FROM '${filepath}' WITH CSV HEADER`;
         console.log(fillQuery);
 
-        // drop table data
+
         const dropQuery: string = `TRUNCATE TABLE ${element};`;
         await client.query(dropQuery);
 
-        // fill table data
+
         await client.query(fillQuery);
       }
     } catch (err) {

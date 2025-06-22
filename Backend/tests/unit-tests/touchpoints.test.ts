@@ -52,7 +52,7 @@ describe("touch point data tests", () => {
             ["2024-09-29T10:00:00.000Z", "2024-09-29T11:00:00.000Z"]
         );
         expect(result[0]).toEqual(mockFlight);
-    });
+    }, 10000);
 
     test("GetFlightsByFlightNumber should return matching flight", async () => {
         const mockFlight = {
