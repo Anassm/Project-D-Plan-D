@@ -2,9 +2,7 @@ name: CI with Docker Compose
 
 on:
   push:
-    branches: ["development", "pipeline2"]
   pull_request:
-    branches: ["development", "pipeline2"]
   workflow_dispatch:
 
 jobs:
