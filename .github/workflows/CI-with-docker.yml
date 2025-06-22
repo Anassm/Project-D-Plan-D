@@ -1,0 +1,51 @@
+name: CI with Docker Compose
+
+on:
+  push:
+    branches: ["development", "pipeline"]
+  pull_request:
+    branches: ["development", "pipeline"]
+  workflow_dispatch:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: build containers
+        run: |
+          docker compose build
+          docker compose up -d
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend..."
+          for i in {1..10}; do
+            if curl -k -s https://localhost:3000/health; then
+              echo "✅ Backend is up"
+              break
+            else
+              echo "⏳ Waiting..."
+              sleep 3
+            fi
+          done
+
+      - name: Wait for frontend to be ready
+        run: |
+          echo "Waiting for frontend..."
+          for i in {1..10}; do
+            if curl -k -s http://localhost:5173; then
+              echo "✅ Frontend is up"
+              break
+            else
+              echo "⏳ Waiting..."
+              sleep 3
+            fi
+          done
+
+      - name: Tear down containers
+        if: always()
+        run: docker compose down
