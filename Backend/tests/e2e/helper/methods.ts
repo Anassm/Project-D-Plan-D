@@ -21,17 +21,3 @@ export function isTouchpoint(obj: any): obj is TTouchpoint {
     (typeof obj.paxactual === "number" || obj.paxactual === null)
   );
 }
-
-export function logTypesFromResponse(responseBody: any[], label: string = "") {
-  console.log(`\n🔍 Types from ${label} endpoint:`);
-
-  const sample = responseBody[0];
-  if (!sample) {
-    console.log("No data returned.");
-    return;
-  }
-
-  for (const [key, value] of Object.entries(sample)) {
-    console.log(`- ${key}: ${typeof value}`);
-  }
-}

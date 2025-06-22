@@ -39,7 +39,7 @@ describe("Auth E2E", () => {
   });
 
   it("User accessing unaccessable endpoint", async () => {
-    const token = getAuthTokenUser();
+    const token = await getAuthTokenUser();
 
     const res = await request(app.server)
       .get("/api/touchpoint/flightid")

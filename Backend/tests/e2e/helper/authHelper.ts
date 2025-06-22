@@ -17,8 +17,6 @@ export async function getAuthTokenAdmin(): Promise<string> {
 
   cachedToken.admin = res.body.token;
 
-  // console.log("ADMIN TOKENNNNNN: ", cachedToken);
-  
   return cachedToken.admin;
 }
 
@@ -35,8 +33,6 @@ export async function getAuthTokenUser(): Promise<string> {
   }
 
   cachedToken.user = res.body.token;
-
-  // console.log("USER TOKENNNNNN: ", cachedToken);
 
   return cachedToken.user;
 }
