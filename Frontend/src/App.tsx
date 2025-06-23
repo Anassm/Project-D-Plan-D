@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import Header from "./Components/Header/Header";
+import Login from "./Components/Login/Login";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export interface IUser {
+  id: number;
+  username: string;
+  role: string;
+  iat: number;
 }
 
-export default App
+export default function App() {
+  const [data, setData] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [description, setDescription] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null);
+
+  // Decode token on mount and whenever isLoggedIn changes
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode<IUser>(token);
+        setUser(decoded);
+        setIsLoggedIn(true);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    } else {
+      setIsLoggedIn(false);
+      setUser(null);
+    }
+  }, [isLoggedIn]);
+
+  return isLoggedIn && user ? (
+    <>
+      <Header
+        user={user} // Pass user info here
+        setData={setData}
+        setLoading={setLoading}
+        setDescription={setDescription}
+        onLogout={() => {
+          setIsLoggedIn(false);
+          setUser(null);
+        }}
+      />
+      <div className="outlet">
+        {description && (
+          <p>
+            <strong>Description:</strong> {description}
+          </p>
+        )}
+        <strong>API DATA:</strong>
+        <pre>{loading ? "Loading, please wait..." : data}</pre>
+      </div>
+    </>
+  ) : (
+    <Login onLoginSuccess={() => setIsLoggedIn(true)} />
+  );
+}

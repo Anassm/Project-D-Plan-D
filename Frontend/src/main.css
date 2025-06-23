@@ -1,0 +1,23 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #d6e2ed;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e2b38;
+  color: #f1f1f1;
+  border-bottom: 1px solid #3b4a59;
+}
+
+.outlet {
+  color: #2d2d2d;
+  white-space: pre-wrap;
+  margin-left: 3.3rem;
+  margin-top: 3rem;
+}

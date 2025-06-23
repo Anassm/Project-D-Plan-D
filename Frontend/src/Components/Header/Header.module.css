@@ -1,0 +1,44 @@
+.logo {
+  height: auto;
+  width: 14vw;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 3vh;
+  margin-left: 2vw;
+  width: 100%;
+}
+
+.leftButtons {
+  display: flex;
+  gap: 2rem;
+}
+
+.loginWrapper {
+  margin-left: auto;
+  margin-right: 2vw;
+}
+
+.button {
+  border-radius: 10px;
+  padding: 1rem;
+  background-color: #fc2e4d;
+  color: white;
+  border: none;
+  transition: background 0.3s ease;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #e1223f;
+}
+
+.userInfo {
+  font-weight: bold;
+  margin-right: 2rem;
+  font-size: 16px;
+}
